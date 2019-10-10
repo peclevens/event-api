@@ -1,8 +1,8 @@
 package com.clivenspetit.events.domain.event;
 
 import com.clivenspetit.events.domain.common.Location;
-import com.clivenspetit.events.domain.event.validation.constraints.RequireEventLocationOrOnlineUrl;
 import com.clivenspetit.events.domain.session.CreateSession;
+import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 import com.clivenspetit.events.domain.validation.constraints.URL;
 
 import javax.validation.Valid;
@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-@RequireEventLocationOrOnlineUrl
+@AnyOf(message = "Location or online url is required. Both are allowed too.")
 public class CreateEvent {
 
     /**
