@@ -40,13 +40,13 @@ public class WordValidatorTest {
     }
 
     @Test
-    public void isValid_emptyStringPassed_returnTrue() {
+    public void isValid_emptyStringPassed_returnFalse() {
         violations = validator.validate(new WordTest(""));
         assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void isValid_2wordsPassed_returnTrue() {
+    public void isValid_2wordsPassed_returnFalse() {
         violations = validator.validate(new WordTest("Hello world"));
         assertFalse(violations.isEmpty());
     }
@@ -65,7 +65,7 @@ public class WordValidatorTest {
     }
 
     @Test
-    public void isValid_11wordsPassed_returnTrue() {
+    public void isValid_11wordsPassed_returnFalse() {
         WordTest word = new WordTest("Hello world, how are you doing? This test should be fail.");
         violations = validator.validate(word);
 
