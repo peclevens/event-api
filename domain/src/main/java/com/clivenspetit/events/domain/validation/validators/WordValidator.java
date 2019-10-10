@@ -22,7 +22,9 @@ public class WordValidator implements ConstraintValidator<Word, String> {
     @Override
     public boolean isValid(String text, ConstraintValidatorContext context) {
         // Get words list
-        String[] words = (text != null) ? text.split("\\s+") : new String[]{};
+        String[] words = (text != null && !text.trim().isEmpty())
+                ? text.split("\\s+") : new String[]{};
+
         return words.length >= min && words.length <= max;
     }
 }
