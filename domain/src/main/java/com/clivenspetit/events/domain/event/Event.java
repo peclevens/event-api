@@ -1,7 +1,9 @@
 package com.clivenspetit.events.domain.event;
 
 import com.clivenspetit.events.domain.common.Location;
+import com.clivenspetit.events.domain.event.validation.constraints.RequireEventLocationOrOnlineUrl;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.validation.constraints.URL;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import java.util.Set;
  *
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
+@RequireEventLocationOrOnlineUrl
 public class Event {
 
     /**
@@ -53,9 +56,16 @@ public class Event {
     /**
      * Event URL picture
      */
-    @Size(max = 2048)
     @NotBlank(message = "Image Url is required.")
+    @URL(message = "Invalid URL")
     private String imageUrl;
+
+    /**
+     * Event Online URL
+     */
+    @NotBlank(message = "Online Url is required.")
+    @URL(message = "Invalid URL")
+    private String onlineUrl;
 
     /**
      * Location
@@ -115,6 +125,14 @@ public class Event {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getOnlineUrl() {
+        return onlineUrl;
+    }
+
+    public void setOnlineUrl(String onlineUrl) {
+        this.onlineUrl = onlineUrl;
     }
 
     public Location getLocation() {

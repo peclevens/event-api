@@ -23,6 +23,7 @@
         <java.version>11</java.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <spring-data-commons.version>2.2.0.RELEASE</spring-data-commons.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>2.1</hamcrest.version>
         <mockito.version>3.0.0</mockito.version>
@@ -32,6 +33,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring data commons -->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring-data-commons.version}</version>
+            </dependency>
+
             <!-- Validation API-->
             <dependency>
                 <groupId>javax.validation</groupId>
@@ -63,6 +71,7 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- Hibernate validator -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
@@ -70,6 +79,7 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- Javax el, required for Hibernate validator -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.el</artifactId>
