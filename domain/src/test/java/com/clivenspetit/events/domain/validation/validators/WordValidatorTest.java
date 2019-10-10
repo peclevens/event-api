@@ -1,7 +1,7 @@
 package com.clivenspetit.events.domain.validation.validators;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
@@ -18,28 +18,57 @@ import static org.junit.Assert.assertTrue;
  */
 public class WordValidatorTest {
 
-    private Validator validator;
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+    private Set<ConstraintViolation<WordTest>> violations;
 
-    @Before
-    public void setUp() throws Exception {
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    @BeforeClass
+    public static void setUp() throws Exception {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        validator = null;
+    @AfterClass
+    public static void tearDown() throws Exception {
+        validatorFactory.close();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void isValid_nullArgumentPassed_throwException() {
-        Set<ConstraintViolation<String>> violations = validator.validate(null);
+        violations = validator.validate(null);
         assertFalse(violations.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void isValid_emptyStringPassed_returnTrue() {
-        Set<ConstraintViolation<String>> violations = validator.validate("");
+        violations = validator.validate(new WordTest(""));
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void isValid_2wordsPassed_returnTrue() {
+        violations = validator.validate(new WordTest("Hello world"));
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void isValid_5wordsPassed_returnTrue() {
+        violations = validator.validate(new WordTest("Hello world, how are you?"));
         assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void isValid_10wordsPassed_returnTrue() {
+        WordTest word = new WordTest("Hello world, how are you? This test should be fail.");
+        violations = validator.validate(word);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void isValid_11wordsPassed_returnTrue() {
+        WordTest word = new WordTest("Hello world, how are you doing? This test should be fail.");
+        violations = validator.validate(word);
+
+        assertFalse(violations.isEmpty());
     }
 }
