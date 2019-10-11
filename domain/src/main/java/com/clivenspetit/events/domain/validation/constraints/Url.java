@@ -1,6 +1,6 @@
 package com.clivenspetit.events.domain.validation.constraints;
 
-import com.clivenspetit.events.domain.validation.validators.URLValidator;
+import com.clivenspetit.events.domain.validation.validators.UrlValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,9 +13,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
         ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(URL.List.class)
-@Constraint(validatedBy = {URLValidator.class})
-public @interface URL {
+@Repeatable(Url.List.class)
+@Constraint(validatedBy = {UrlValidator.class})
+public @interface Url {
 
     String message() default "{com.clivenspetit.events.domain.validation.constraints.URL.message}";
 
@@ -29,6 +29,6 @@ public @interface URL {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface List {
 
-        URL[] value();
+        Url[] value();
     }
 }

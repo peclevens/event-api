@@ -3,8 +3,8 @@ package com.clivenspetit.events.domain.event;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.validation.constraints.AnyOf;
-import com.clivenspetit.events.domain.validation.constraints.URL;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
+import com.clivenspetit.events.domain.validation.constraints.Url;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -57,14 +57,14 @@ public class Event {
      * Event URL picture
      */
     @NotBlank(message = "Image Url is required.")
-    @URL(message = "Invalid URL")
+    @Url(message = "Url should be valid and start with http or https.")
     private String imageUrl;
 
     /**
      * Event Online URL
      */
     @NotBlank(message = "Online Url is required.")
-    @URL(message = "Invalid URL")
+    @Url(message = "Url should be valid and start with http or https.")
     private String onlineUrl;
 
     /**
