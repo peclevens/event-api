@@ -21,5 +21,5 @@ public @interface AnyOf {
 
     Class<? extends Payload>[] payload() default {};
 
-    String[] fields() default {};
+    String[] fields();
 }

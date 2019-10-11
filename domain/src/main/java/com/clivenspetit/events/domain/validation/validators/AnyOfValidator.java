@@ -20,9 +20,7 @@ public class AnyOfValidator implements ConstraintValidator<AnyOf, Object> {
     }
 
     @Override
-    public boolean isValid(Object object, ConstraintValidatorContext constraintValidatorContext) {
-        if (object == null) return true;
-
+    public boolean isValid(Object object, ConstraintValidatorContext context) {
         BeanWrapper wrapper = new BeanWrapperImpl(object);
 
         // Make sure at least one field has value

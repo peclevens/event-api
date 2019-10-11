@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-@AnyOf(message = "Location or online url is required. Both are allowed too.")
+@AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
 public class CreateEvent {
 
     /**
