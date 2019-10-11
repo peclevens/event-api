@@ -33,18 +33,6 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-        <!-- Hamcrest -->
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-        </dependency>
-
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-
         <!-- Hibernate validator -->
         <dependency>
             <groupId>org.hibernate</groupId>
