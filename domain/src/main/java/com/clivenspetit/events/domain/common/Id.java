@@ -13,6 +13,14 @@ public class Id {
     @UUID(message = "Id should be a valid v4 UUID.")
     private String id;
 
+    public Id() {
+
+    }
+
+    public Id(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
