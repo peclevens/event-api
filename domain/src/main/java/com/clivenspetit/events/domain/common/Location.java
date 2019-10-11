@@ -1,6 +1,7 @@
 package com.clivenspetit.events.domain.common;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 /**
@@ -11,6 +12,7 @@ public class Location {
     /**
      * The version of this object.
      */
+    @PositiveOrZero(message = "Version should be greater or equal than zero.")
     private Integer version = 0;
 
     @Size(max = 120, message = "Address should have be {max} characters max.")

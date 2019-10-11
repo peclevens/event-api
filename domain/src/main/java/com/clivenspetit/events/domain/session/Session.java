@@ -4,6 +4,7 @@ import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class Session extends CreateSession {
     /**
      * The version of this object.
      */
+    @PositiveOrZero(message = "Version should be greater or equal than zero.")
     private Integer version = 0;
 
     /**

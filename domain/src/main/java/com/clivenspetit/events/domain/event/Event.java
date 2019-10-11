@@ -25,6 +25,7 @@ public class Event {
     /**
      * The version of this object.
      */
+    @PositiveOrZero(message = "Version should be greater or equal than zero.")
     private Integer version = 0;
 
     /**
