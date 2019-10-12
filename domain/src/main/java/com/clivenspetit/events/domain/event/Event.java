@@ -9,7 +9,7 @@ import com.clivenspetit.events.domain.validation.constraints.Url;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -78,7 +78,7 @@ public class Event {
      * Event sessions
      */
     @Valid
-    private Set<Session> sessions = new HashSet<>();
+    private Set<Session> sessions = new LinkedHashSet<>();
 
     public Integer getVersion() {
         return version;

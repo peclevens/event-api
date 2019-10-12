@@ -1,11 +1,12 @@
 package com.clivenspetit.events.domain.session;
 
+import com.clivenspetit.events.domain.validation.constraints.IterableOfStringPattern;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Session
@@ -32,9 +33,9 @@ public class Session extends CreateSession {
      * List of voters.
      */
     @Valid
-    @Pattern(regexp = "^[a-z0-9_.-]+$",
+    @IterableOfStringPattern(regexp = "^[a-z0-9_.-]+$",
             message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
-    private List<String> voters = null;
+    private Set<String> voters = new LinkedHashSet<>();
 
     public Integer getVersion() {
         return version;
@@ -52,11 +53,11 @@ public class Session extends CreateSession {
         this.id = id;
     }
 
-    public List<String> getVoters() {
+    public Set<String> getVoters() {
         return voters;
     }
 
-    public void setVoters(List<String> voters) {
+    public void setVoters(Set<String> voters) {
         this.voters = voters;
     }
 }
