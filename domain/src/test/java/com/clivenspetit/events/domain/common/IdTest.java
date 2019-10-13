@@ -23,13 +23,13 @@ public class IdTest {
     private Set<ConstraintViolation<Id>> violations;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void beforeClass() throws Exception {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void afterClass() throws Exception {
         validatorFactory.close();
     }
 
