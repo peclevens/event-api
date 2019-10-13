@@ -40,9 +40,9 @@ public class UrlValidatorTest {
     }
 
     @Test
-    public void isValid_nullValuePassedForUrl_returnFalse() {
+    public void isValid_nullValuePassedForUrl_returnTrue() {
         violations = validator.validate(new UrlTest());
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
