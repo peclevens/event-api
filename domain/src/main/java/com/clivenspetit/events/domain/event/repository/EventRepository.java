@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Event CRUD operations management.
@@ -39,7 +40,7 @@ public interface EventRepository {
      * @param event
      * @return
      */
-    Id createEvent(@Valid CreateEvent event);
+    Id createEvent(@NotNull @Valid CreateEvent event);
 
     /**
      * Update existing event.
@@ -48,7 +49,7 @@ public interface EventRepository {
      * @param event
      * @return
      */
-    Event updateEvent(@UUID String id, @Valid Event event);
+    Event updateEvent(@UUID String id, @NotNull @Valid Event event);
 
     /**
      * Delete event by id.
