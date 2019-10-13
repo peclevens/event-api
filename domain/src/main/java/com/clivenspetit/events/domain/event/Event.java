@@ -64,7 +64,6 @@ public class Event {
     /**
      * Event Online URL
      */
-    @NotBlank(message = "Online Url is required.")
     @Url(message = "Url should be valid and start with http or https.")
     private String onlineUrl;
 

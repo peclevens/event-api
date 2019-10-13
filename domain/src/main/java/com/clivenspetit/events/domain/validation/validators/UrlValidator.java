@@ -14,6 +14,8 @@ public class UrlValidator implements ConstraintValidator<Url, String> {
 
     @Override
     public boolean isValid(String inputUrl, ConstraintValidatorContext context) {
-        return inputUrl != null && !inputUrl.trim().isEmpty() && inputUrl.matches(URL_PATTERN);
+        if (inputUrl == null) return true;
+
+        return !inputUrl.trim().isEmpty() && inputUrl.matches(URL_PATTERN);
     }
 }
