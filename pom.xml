@@ -23,6 +23,7 @@
 
     <modules>
         <module>domain</module>
+        <module>usecase</module>
         <module>web-api</module>
     </modules>
 
@@ -32,6 +33,7 @@
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <spring-data-commons.version>2.2.0.RELEASE</spring-data-commons.version>
+        <events.version>1.0.0</events.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>2.1</hamcrest.version>
         <mockito.version>3.0.0</mockito.version>
@@ -41,6 +43,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Event domain module -->
+            <dependency>
+                <groupId>com.clivenspetit.events</groupId>
+                <artifactId>domain</artifactId>
+                <version>${events.version}</version>
+            </dependency>
+
             <!-- Spring data commons -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
