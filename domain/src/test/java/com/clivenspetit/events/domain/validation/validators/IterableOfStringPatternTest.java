@@ -7,16 +7,16 @@ import java.util.List;
 /**
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-public class IterableOfStringTest {
+public class IterableOfStringPatternTest {
 
     @IterableOfStringPattern(regexp = "[a-z]+", message = "Invalid item name.")
     private List<String> items;
 
-    public IterableOfStringTest() {
+    public IterableOfStringPatternTest() {
 
     }
 
-    public IterableOfStringTest(List<String> items) {
+    public IterableOfStringPatternTest(List<String> items) {
         this.items = items;
     }
 }

@@ -21,7 +21,7 @@ public class IterableOfStringPatternValidatorTest {
 
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
-    private Set<ConstraintViolation<IterableOfStringTest>> violations;
+    private Set<ConstraintViolation<IterableOfStringPatternTest>> violations;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -42,19 +42,19 @@ public class IterableOfStringPatternValidatorTest {
 
     @Test
     public void isValid_emptyStringsPassed_returnFalse() {
-        violations = validator.validate(new IterableOfStringTest(Arrays.asList("", "")));
+        violations = validator.validate(new IterableOfStringPatternTest(Arrays.asList("", "")));
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void isValid_invalidItemPassed_returnFalse() {
-        violations = validator.validate(new IterableOfStringTest(Arrays.asList("item", "item1")));
+        violations = validator.validate(new IterableOfStringPatternTest(Arrays.asList("item", "item1")));
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void isValid_validItemsPassed_returnTrue() {
-        violations = validator.validate(new IterableOfStringTest(Arrays.asList("item", "items")));
+        violations = validator.validate(new IterableOfStringPatternTest(Arrays.asList("item", "items")));
         assertTrue(violations.isEmpty());
     }
 }

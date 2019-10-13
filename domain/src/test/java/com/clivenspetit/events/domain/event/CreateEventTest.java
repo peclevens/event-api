@@ -71,7 +71,7 @@ public class CreateEventTest {
         event.setSessions(Collections.singleton(session));
 
         violations = validator.validate(event);
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid event should pass.", violations.isEmpty());
     }
 
     @Test

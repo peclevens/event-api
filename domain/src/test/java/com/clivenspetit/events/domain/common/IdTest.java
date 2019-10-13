@@ -36,18 +36,18 @@ public class IdTest {
     @Test
     public void invalidIdPassed_returnFalse() {
         violations = validator.validate(new Id());
-        assertFalse(violations.isEmpty());
+        assertFalse("Null id should pass.", violations.isEmpty());
 
         violations = validator.validate(new Id(""));
-        assertFalse(violations.isEmpty());
+        assertFalse("Empty id should not pass.", violations.isEmpty());
 
         violations = validator.validate(new Id("id"));
-        assertFalse(violations.isEmpty());
+        assertFalse("Invalid UUID should not pass.", violations.isEmpty());
     }
 
     @Test
     public void validIdPassed_returnTrue() {
         violations = validator.validate(new Id("5ed1dd8d-b715-48ff-a55b-ca4e12e98393"));
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid UUID should pass.", violations.isEmpty());
     }
 }

@@ -59,6 +59,6 @@ public class LocationTest {
         location.setCountry("Some Country");
 
         violations = validator.validate(location);
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid location should pass.", violations.isEmpty());
     }
 }

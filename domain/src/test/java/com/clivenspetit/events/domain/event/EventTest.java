@@ -89,7 +89,7 @@ public class EventTest {
     @Test
     public void validEventPassed_returnTrue() {
         violations = validator.validate(event);
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid event should pass.", violations.isEmpty());
     }
 
     @Test

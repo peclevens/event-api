@@ -66,7 +66,7 @@ public class SessionTest {
     @Test
     public void validSessionPassed_returnTrue() {
         violations = validator.validate(session);
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid session should pass.", violations.isEmpty());
     }
 
     @Test

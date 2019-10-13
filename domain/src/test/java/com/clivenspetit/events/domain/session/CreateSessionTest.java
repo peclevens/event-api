@@ -41,7 +41,7 @@ public class CreateSessionTest {
     }
 
     @Test
-    public void validEventPassed_returnTrue() {
+    public void validSessionPassed_returnTrue() {
         CreateSession session = new CreateSession();
         session.setName("Using Angular 4 Pipes");
         session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
@@ -50,11 +50,11 @@ public class CreateSessionTest {
         session.setDuration(LocalTime.of(1, 0));
 
         violations = validator.validate(session);
-        assertTrue(violations.isEmpty());
+        assertTrue("Valid session should pass.", violations.isEmpty());
     }
 
     @Test
-    public void invalidEventPassed_returnFalse() {
+    public void invalidSessionPassed_returnFalse() {
         CreateSession session = new CreateSession();
         session.setName("A");
         session.setDescription("Learn all about it.");
