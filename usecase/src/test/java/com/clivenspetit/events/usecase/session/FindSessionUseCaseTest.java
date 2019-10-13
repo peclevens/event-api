@@ -4,17 +4,22 @@ import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.validation.executable.ExecutableValidator;
+import java.lang.reflect.Method;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 /**
@@ -24,9 +29,25 @@ public class FindSessionUseCaseTest {
 
     private static final String SESSION_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
 
+    private static ValidatorFactory validatorFactory;
+    private static ExecutableValidator executableValidator;
+    private Set<ConstraintViolation<FindSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private FindSessionUseCase findSessionUseCase;
     private Session session;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        executableValidator = validatorFactory.getValidator().forExecutables();
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        validatorFactory.close();
+        executableValidator = null;
+        validatorFactory = null;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -52,15 +73,31 @@ public class FindSessionUseCaseTest {
         sessionRepository = null;
         findSessionUseCase = null;
         session = null;
+        violations = null;
     }
 
     @Test
-    public void findSessionById_nullArgumentPassed_throwException() {
+    public void findSessionById_nullArgumentPassed_throwException() throws Exception {
+        Method method = FindSessionUseCase.class.getMethod("findSessionById", String.class);
+        Object[] parameters = new Object[]{null};
 
+        violations = executableValidator.validateParameters(findSessionUseCase, method, parameters);
+
+        assertFalse("Null argument should not pass.", violations.isEmpty());
+    }
+
+    @Test
+    public void findSessionById_invalidIdPassed_throwException() throws Exception {
+        Method method = FindSessionUseCase.class.getMethod("findSessionById", String.class);
+        Object[] parameters = new Object[]{"id"};
+
+        violations = executableValidator.validateParameters(findSessionUseCase, method, parameters);
+
+        assertFalse("Null argument should not pass.", violations.isEmpty());
     }
 
     @Test(expected = SessionNotFoundException.class)
-    public void findSessionById_invalidIdPassed_throwException() {
+    public void findSessionById_unknownIdPassed_throwException() {
         findSessionUseCase.findSessionById("909b6ea4-1975-4c5c-ac4e-11db13eea89a");
     }
 
