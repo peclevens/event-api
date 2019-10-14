@@ -51,6 +51,13 @@
                 <version>${events.version}</version>
             </dependency>
 
+            <!-- Event usecase module -->
+            <dependency>
+                <groupId>com.clivenspetit.events</groupId>
+                <artifactId>usecase</artifactId>
+                <version>${events.version}</version>
+            </dependency>
+
             <!-- Spring data commons -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
