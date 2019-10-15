@@ -51,6 +51,7 @@ public class CreateEvent {
     /**
      * Event price
      */
+    @PositiveOrZero(message = "Price should be greater or equal to zero.")
     @DecimalMax(value = "999.99", message = "Price should be less than equals to {value}.")
     private Double price = 0.0D;
 

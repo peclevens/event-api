@@ -25,7 +25,7 @@ public class Event {
     /**
      * The version of this object.
      */
-    @PositiveOrZero(message = "Version should be greater or equal than zero.")
+    @PositiveOrZero(message = "Version should be greater or equal to zero.")
     private Integer version = 0;
 
     /**
@@ -51,6 +51,7 @@ public class Event {
     /**
      * Event price
      */
+    @PositiveOrZero(message = "Price should be greater or equal to zero.")
     @DecimalMax(value = "999.99", message = "Price should be less than equals to {value}.")
     private Double price = 0.0D;
 

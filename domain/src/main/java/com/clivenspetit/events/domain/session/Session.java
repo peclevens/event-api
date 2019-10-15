@@ -20,7 +20,7 @@ public class Session extends CreateSession {
     /**
      * The version of this object.
      */
-    @PositiveOrZero(message = "Version should be greater or equal than zero.")
+    @PositiveOrZero(message = "Version should be greater or equal to zero.")
     private Integer version = 0;
 
     /**
