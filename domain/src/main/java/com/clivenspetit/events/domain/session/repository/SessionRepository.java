@@ -28,10 +28,11 @@ public interface SessionRepository {
      * Find all sessions by event id.
      *
      * @param eventId
+     * @param query
      * @param sort
      * @return
      */
-    List<Session> getSessionsByEventId(@UUID String eventId, Sort sort);
+    List<Session> getSessionsByEventId(@UUID String eventId, String query, Sort sort);
 
     /**
      * Create new session.
