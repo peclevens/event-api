@@ -75,7 +75,7 @@ public class FindEventsUseCaseTest {
                 .thenReturn(new PageImpl<>(Collections.singletonList(event)));
 
         when(eventRepository.getAllEvents(UNKNOWN_QUERY, pageable))
-                .thenReturn(new PageImpl<Event>(new ArrayList<>()));
+                .thenReturn(new PageImpl<>(new ArrayList<>()));
     }
 
     @After
@@ -95,6 +95,8 @@ public class FindEventsUseCaseTest {
         verify(eventRepository, times(1))
                 .getAllEvents(argumentCaptor.capture(), argumentCaptorPage.capture());
 
+        assertThat(argumentCaptor.getAllValues().get(0), is(UNKNOWN_QUERY));
+        assertThat(argumentCaptorPage.getAllValues().get(0), is(pageable));
         assertTrue("No event page should return for invalid query.", eventPage.getContent().isEmpty());
     }
 
