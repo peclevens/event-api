@@ -118,6 +118,6 @@ public class EventTest {
         event.setSessions(Collections.singleton(session));
 
         violations = validator.validate(event);
-        assertEquals(16, violations.size());
+        assertEquals(17, violations.size());
     }
 }
