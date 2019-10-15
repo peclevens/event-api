@@ -26,6 +26,14 @@ public interface EventRepository {
     Event getEventById(@UUID String id);
 
     /**
+     * Find out whether an event exists or not by id.
+     *
+     * @param id
+     * @return
+     */
+    Boolean eventExists(@UUID String id);
+
+    /**
      * Find / filter all events
      *
      * @param query
