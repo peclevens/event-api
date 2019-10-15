@@ -18,7 +18,9 @@ public class FindSessionsUseCase {
         this.sessionRepository = sessionRepository;
     }
 
-    public List<Session> findSessionsByEventId(@UUID String eventId, String query, Sort sort) {
+    public List<Session> findSessionsByEventId(@UUID(message = "Id should be a valid v4 UUID.") String eventId,
+                                               String query, Sort sort) {
+
         return sessionRepository.getSessionsByEventId(eventId, query, sort);
     }
 }
