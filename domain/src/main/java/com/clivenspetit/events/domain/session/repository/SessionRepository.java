@@ -4,6 +4,7 @@ import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
+import org.springframework.data.domain.Sort;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,12 +25,13 @@ public interface SessionRepository {
     Session getSessionById(@UUID String id);
 
     /**
-     * Find all sessions by id.
+     * Find all sessions by event id.
      *
      * @param eventId
+     * @param sort
      * @return
      */
-    List<Session> getSessionsByEventId(@UUID String eventId);
+    List<Session> getSessionsByEventId(@UUID String eventId, Sort sort);
 
     /**
      * Create new session.
