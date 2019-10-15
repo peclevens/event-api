@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
  */
 public class UpdateEventUseCaseTest {
 
-    private static final String EVENT_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
+    private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
 
     private static ValidatorFactory validatorFactory;
     private static ExecutableValidator executableValidator;
@@ -59,7 +59,7 @@ public class UpdateEventUseCaseTest {
 
         Session session = new Session();
         session.setVersion(1);
-        session.setId(EVENT_ID);
+        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
         session.setName("Using Angular 4 Pipes");
         session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
         session.setLevel(Level.BEGINNER);
@@ -74,7 +74,7 @@ public class UpdateEventUseCaseTest {
 
         event = new Event();
         event.setVersion(2);
-        event.setId("eb3a377c-3742-43ac-8d87-35534de2db8f");
+        event.setId(EVENT_ID);
         event.setName("Angular Connect");
         event.setImageUrl("http://localhost/images/angularconnect-shield.png");
         event.setOnlineUrl("https://hangouts.google.com");

@@ -13,13 +13,9 @@ import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -115,17 +111,22 @@ public class FindEventsUseCaseTest {
         // Assert first found event
         Event foundEvent = eventPage.getContent().get(0);
 
+        List<Object> anyOfLocationOnlineUrl = Arrays.asList(foundEvent.getOnlineUrl(), foundEvent.getLocation());
+
         assertThat(argumentCaptor.getAllValues().get(0), is(nullValue()));
         assertThat(foundEvent.getId(), is(event.getId()));
         assertThat(foundEvent.getName(), is("Angular Connect"));
         assertThat(foundEvent.getSessions().size(), is(1));
         assertThat(foundEvent.getPrice(), is(1.00));
+        assertThat(anyOfLocationOnlineUrl, anyOf(hasItem(notNullValue())));
 
         // Assert event location
         Location location = foundEvent.getLocation();
-        assertThat(location.getCountry(), is("United States"));
-        assertThat(location.getCity(), is("New York"));
-        assertThat(location.getAddress(), is("2695 Frederick Douglass Blvd"));
+        if (location != null) {
+            assertThat(location.getCountry(), is("United States"));
+            assertThat(location.getCity(), is("New York"));
+            assertThat(location.getAddress(), is("2695 Frederick Douglass Blvd"));
+        }
 
         // Assert event first session
         Session session = foundEvent.getSessions().iterator().next();
