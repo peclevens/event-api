@@ -9,7 +9,7 @@
 5 | Find sessions for an event | 1. A user want to find a session by id. <br/>2. A user wants to list all sessions for a particular event. | Must have | 1. List all sessions of an event and sort them by level and duration ascendently by default.<br/> 2. Specify search terms.
 6 | Create new session for an event | A user wants to create a new session for a particular event. | Must have | 
 7 | Update existing session for an event | A user wants to update an existing session of a particular event. | Must have | 
-8 | Delete session for an event | A user wants to delete a session for a particular event. | Must have | 
+8 | Delete session for an event | 1. A user wants to delete a particular session. <br/> 2. A user wants to delete all sessions for a particular event. | Must have | 
 9 | Upvote / Downvote session | A user wants to upvote or downvote a particular session. | Must have | 
 
 <br/>
