@@ -7,6 +7,7 @@ import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -35,12 +36,20 @@ public interface SessionRepository {
     List<Session> getSessionsByEventId(@UUID String eventId, String query, Sort sort);
 
     /**
+     * Find out whether a session exists or not by id.
+     *
+     * @param id
+     * @return
+     */
+    Boolean sessionExists(@UUID String id);
+
+    /**
      * Create new session.
      *
      * @param session
      * @return
      */
-    Id createSession(@Valid CreateSession session);
+    Id createSession(@NotNull @Valid CreateSession session);
 
     /**
      * Update existing session.
@@ -49,7 +58,7 @@ public interface SessionRepository {
      * @param session
      * @return
      */
-    Session updateSession(@UUID String id, @Valid Session session);
+    Session updateSession(@UUID String id, @NotNull @Valid Session session);
 
     /**
      * Delete session by id.

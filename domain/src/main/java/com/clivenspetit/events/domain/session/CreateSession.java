@@ -45,7 +45,7 @@ public class CreateSession {
     private LocalTime duration;
 
     /**
-     * The speaker of the session
+     * The name of the speaker of the session
      */
     @Name(message = "Presenter name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 120, message = "Presenter name should be between {min} and {max} characters.")
