@@ -7,6 +7,7 @@ import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
 import org.junit.*;
+import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,8 +23,7 @@ import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
@@ -147,6 +147,9 @@ public class UpdateEventUseCaseTest {
 
     @Test
     public void updateEvent_validModifiedEventPassed_returnUpdatedEvent() throws Exception {
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
+
         Location location = event.getLocation();
         location.setCountry("France");
         location.setCity("Paris");
@@ -157,6 +160,15 @@ public class UpdateEventUseCaseTest {
 
         Event updatedEvent = updateEventUseCase.updateEvent(EVENT_ID, event);
 
+        verify(eventRepository, times(1))
+                .eventExists(argumentCaptor.capture());
+
+        verify(eventRepository, times(1))
+                .updateEvent(argumentCaptor.capture(), eventArgumentCaptor.capture());
+
+        assertThat(argumentCaptor.getAllValues().get(0), is(EVENT_ID));
+        assertThat(argumentCaptor.getAllValues().get(1), is(EVENT_ID));
+        assertThat(eventArgumentCaptor.getAllValues().get(0).getName(), is(event.getName()));
         assertThat(updatedEvent.getName(), is("Using Angular Pipes"));
         assertThat(updatedEvent.getPrice(), is(0.00));
         assertThat(updatedEvent.getLocation().getCountry(), is("France"));
