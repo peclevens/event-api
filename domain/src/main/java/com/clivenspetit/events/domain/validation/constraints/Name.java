@@ -1,5 +1,6 @@
 package com.clivenspetit.events.domain.validation.constraints;
 
+import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.Pattern;
@@ -15,6 +16,7 @@ import java.lang.annotation.*;
 @Repeatable(Name.List.class)
 @Pattern(regexp = "^[a-zA-Z]+(?:(?:[',. -][a-zA-Z ])?[a-zA-Z]*)*$")
 @ReportAsSingleViolation
+@Constraint(validatedBy = {})
 public @interface Name {
 
     String message() default "{com.clivenspetit.events.domain.validation.constraints.Name.message}";
