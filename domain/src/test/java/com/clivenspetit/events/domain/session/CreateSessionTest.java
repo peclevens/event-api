@@ -63,6 +63,6 @@ public class CreateSessionTest {
         session.setDuration(null);
 
         violations = validator.validate(session);
-        assertEquals(4, violations.size());
+        assertEquals(5, violations.size());
     }
 }

@@ -107,6 +107,6 @@ public class CreateSessionUseCaseTest {
 
         violations = executableValidator.validateParameters(createSessionUseCase, method, parameters);
 
-        assertThat(violations, hasSize(4));
+        assertThat(violations, hasSize(5));
     }
 }

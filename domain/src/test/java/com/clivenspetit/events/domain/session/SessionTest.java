@@ -81,6 +81,6 @@ public class SessionTest {
         session.setVoters(new LinkedHashSet<>(Arrays.asList("voter/1", "voter2")));
 
         violations = validator.validate(session);
-        assertEquals(7, violations.size());
+        assertEquals(8, violations.size());
     }
 }

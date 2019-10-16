@@ -117,7 +117,7 @@ public class UpdateSessionUseCaseTest {
 
         violations = executableValidator.validateParameters(updateSessionUseCase, method, parameters);
 
-        assertThat("Invalid arguments should not pass.", violations, hasSize(4));
+        assertThat("Invalid arguments should not pass.", violations, hasSize(5));
     }
 
     @Test

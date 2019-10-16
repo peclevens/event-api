@@ -145,6 +145,6 @@ public class CreateEventUseCaseTest {
 
         violations = executableValidator.validateParameters(createEventUseCase, method, parameters);
 
-        assertEquals(12, violations.size());
+        assertEquals(13, violations.size());
     }
 }
