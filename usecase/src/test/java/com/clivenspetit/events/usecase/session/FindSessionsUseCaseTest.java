@@ -1,17 +1,18 @@
 package com.clivenspetit.events.usecase.session;
 
-import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.usecase.DataStubResource;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Sort;
 
-import javax.validation.ConstraintViolation;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -28,27 +29,19 @@ public class FindSessionsUseCaseTest {
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
     private static final Sort sort = Sort.by(Sort.Direction.ASC, "level", "duration");
 
-    private Set<ConstraintViolation<FindSessionsUseCase>> violations;
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private SessionRepository sessionRepository;
     private FindSessionsUseCase findSessionsUseCase;
     private List<Session> sessions;
 
     @Before
     public void setUp() throws Exception {
-        Session session = new Session();
-        session.setVersion(1);
-        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
         sessionRepository = mock(SessionRepository.class);
         findSessionsUseCase = new FindSessionsUseCase(sessionRepository);
 
-        sessions = Collections.singletonList(session);
+        sessions = Collections.singletonList(stubResource.session);
 
         when(sessionRepository.getSessionsByEventId(EVENT_ID, null, sort))
                 .thenReturn(sessions);
@@ -62,7 +55,6 @@ public class FindSessionsUseCaseTest {
         sessionRepository = null;
         findSessionsUseCase = null;
         sessions = null;
-        violations = null;
     }
 
     @Test

@@ -4,18 +4,13 @@ import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,35 +28,26 @@ public class FindSessionUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<FindSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private FindSessionUseCase findSessionUseCase;
-    private Session session;
 
     @Before
     public void setUp() throws Exception {
-        session = new Session();
-        session.setVersion(1);
-        session.setId(SESSION_ID);
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
         sessionRepository = mock(SessionRepository.class);
         findSessionUseCase = new FindSessionUseCase(sessionRepository);
 
         when(sessionRepository.getSessionById(SESSION_ID))
-                .thenReturn(session);
+                .thenReturn(stubResource.session);
     }
 
     @After
     public void tearDown() throws Exception {
         sessionRepository = null;
         findSessionUseCase = null;
-        session = null;
         violations = null;
     }
 

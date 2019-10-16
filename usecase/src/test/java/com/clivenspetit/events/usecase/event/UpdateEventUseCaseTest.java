@@ -1,25 +1,17 @@
 package com.clivenspetit.events.usecase.event;
 
-import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
-import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -36,47 +28,20 @@ public class UpdateEventUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<UpdateEventUseCase>> violations;
     private EventRepository eventRepository;
     private UpdateEventUseCase updateEventUseCase;
-    private Event event = null;
 
     @Before
     public void setUp() throws Exception {
-        LocalDateTime startDate = LocalDateTime.of(2036, 9, 26,
-                10, 0, 0);
-
-        Session session = new Session();
-        session.setVersion(1);
-        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
-        Location location = new Location();
-        location.setCountry("United States");
-        location.setCity("New York");
-        location.setAddress("2695 Frederick Douglass Blvd");
-
-        event = new Event();
-        event.setVersion(2);
-        event.setId(EVENT_ID);
-        event.setName("Angular Connect");
-        event.setImageUrl("http://localhost/images/angularconnect-shield.png");
-        event.setOnlineUrl("https://hangouts.google.com");
-        event.setLocation(location);
-        event.setPrice(1.00);
-        event.setStartDate(startDate);
-        event.setSessions(Collections.singleton(session));
-
         eventRepository = mock(EventRepository.class);
         updateEventUseCase = new UpdateEventUseCase(eventRepository);
 
-        when(eventRepository.updateEvent(EVENT_ID, event))
-                .thenReturn(event);
+        when(eventRepository.updateEvent(EVENT_ID, stubResource.event))
+                .thenReturn(stubResource.event);
 
         when(eventRepository.eventExists(EVENT_ID))
                 .thenReturn(Boolean.TRUE);
@@ -87,7 +52,6 @@ public class UpdateEventUseCaseTest {
         eventRepository = null;
         updateEventUseCase = null;
         violations = null;
-        event = null;
     }
 
     @Test
@@ -112,13 +76,15 @@ public class UpdateEventUseCaseTest {
 
     @Test(expected = EventNotFoundException.class)
     public void updateEvent_unknownIdPassed_throwException() {
-        updateEventUseCase.updateEvent("cd4c770a-e53c-4d19-8393-3b37ec811b66", event);
+        updateEventUseCase.updateEvent("cd4c770a-e53c-4d19-8393-3b37ec811b66", stubResource.event);
     }
 
     @Test
     public void updateEvent_invalidModifiedEventPassed_throwException() throws Exception {
         LocalDateTime startDate = LocalDateTime.of(2018, 9, 26,
                 10, 0, 0);
+
+        Event event = stubResource.event;
 
         event.setName("A");
         event.setPrice(-2.00);
@@ -138,6 +104,8 @@ public class UpdateEventUseCaseTest {
     public void updateEvent_validModifiedEventPassed_returnUpdatedEvent() throws Exception {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
+
+        Event event = stubResource.event;
 
         Location location = event.getLocation();
         location.setCountry("France");

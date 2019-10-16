@@ -1,23 +1,15 @@
 package com.clivenspetit.events.usecase.event;
 
 import com.clivenspetit.events.domain.common.Id;
-import com.clivenspetit.events.domain.common.Level;
-import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
-import com.clivenspetit.events.domain.session.CreateSession;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,41 +27,19 @@ public class CreateEventUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<CreateEventUseCase>> violations;
     private EventRepository eventRepository;
     private CreateEventUseCase createEventUseCase;
-    private CreateEvent event = null;
 
     @Before
     public void setUp() throws Exception {
-        LocalDateTime startDate = LocalDateTime.of(2036, 9, 26,
-                10, 0, 0);
-
-        CreateSession session = new CreateSession();
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-
-        Location location = new Location();
-        location.setCountry("United States");
-        location.setCity("New York");
-        location.setAddress("2695 Frederick Douglass Blvd");
-
-        event = new CreateEvent();
-        event.setName("Angular Connect");
-        event.setImageUrl("http://localhost/images/angularconnect-shield.png");
-        event.setOnlineUrl("https://hangouts.google.com");
-        event.setLocation(location);
-        event.setPrice(1.00);
-        event.setStartDate(startDate);
-        event.setSessions(Collections.singleton(session));
-
         eventRepository = mock(EventRepository.class);
         createEventUseCase = new CreateEventUseCase(eventRepository);
 
-        when(eventRepository.createEvent(event))
+        when(eventRepository.createEvent(stubResource.createEvent))
                 .thenReturn(NEW_EVENT_ID);
     }
 
@@ -78,7 +48,6 @@ public class CreateEventUseCaseTest {
         eventRepository = null;
         createEventUseCase = null;
         violations = null;
-        event = null;
     }
 
     @Test
@@ -95,7 +64,7 @@ public class CreateEventUseCaseTest {
     public void createEvent_validEventPassed_returnNewEventId() throws Exception {
         ArgumentCaptor<CreateEvent> argumentCaptor = ArgumentCaptor.forClass(CreateEvent.class);
 
-        Id newEvent = createEventUseCase.createEvent(this.event);
+        Id newEvent = createEventUseCase.createEvent(stubResource.createEvent);
 
         verify(eventRepository, times(1))
                 .createEvent(argumentCaptor.capture());
@@ -105,32 +74,8 @@ public class CreateEventUseCaseTest {
 
     @Test
     public void createEvent_invalidEventPassed_throwException() throws Exception {
-        LocalDateTime startDate = LocalDateTime.of(2018, 9, 26,
-                10, 0, 0);
-
-        CreateSession session = new CreateSession();
-        session.setName("A");
-        session.setDescription("Learn all about it.");
-        session.setLevel(null);
-        session.setPresenter("John/Doe");
-        session.setDuration(null);
-
-        Location location = new Location();
-        location.setCountry(null);
-        location.setCity(null);
-        location.setAddress(null);
-
-        CreateEvent event = new CreateEvent();
-        event.setName("E");
-        event.setImageUrl("localhost/images/angularconnect-shield.png");
-        event.setOnlineUrl("hangouts.google.com");
-        event.setLocation(location);
-        event.setPrice(-1.00);
-        event.setStartDate(startDate);
-        event.setSessions(Collections.singleton(session));
-
         Method method = CreateEventUseCase.class.getMethod("createEvent", CreateEvent.class);
-        Object[] parameters = new Object[]{event};
+        Object[] parameters = new Object[]{stubResource.invalidCreateEvent};
 
         violations = validationResource.executableValidator.validateParameters(createEventUseCase, method, parameters);
 

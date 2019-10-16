@@ -1,19 +1,15 @@
 package com.clivenspetit.events.usecase.session;
 
 import com.clivenspetit.events.domain.common.Id;
-import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
-import java.time.LocalTime;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,24 +27,19 @@ public class CreateSessionUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<CreateSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private CreateSessionUseCase createSessionUseCase;
-    private CreateSession session = null;
 
     @Before
     public void setUp() throws Exception {
-        session = new CreateSession();
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-
         sessionRepository = mock(SessionRepository.class);
         createSessionUseCase = new CreateSessionUseCase(sessionRepository);
 
-        when(sessionRepository.createSession(session))
+        when(sessionRepository.createSession(stubResource.createSession))
                 .thenReturn(NEW_SESSION_ID);
     }
 
@@ -57,7 +48,6 @@ public class CreateSessionUseCaseTest {
         sessionRepository = null;
         createSessionUseCase = null;
         violations = null;
-        session = null;
     }
 
     @Test
@@ -75,7 +65,7 @@ public class CreateSessionUseCaseTest {
     public void createSession_validSessionPassed_returnNewSessionId() throws Exception {
         ArgumentCaptor<CreateSession> argumentCaptor = ArgumentCaptor.forClass(CreateSession.class);
 
-        Id newSession = createSessionUseCase.createSession(this.session);
+        Id newSession = createSessionUseCase.createSession(stubResource.createSession);
 
         verify(sessionRepository, times(1))
                 .createSession(argumentCaptor.capture());
@@ -85,15 +75,8 @@ public class CreateSessionUseCaseTest {
 
     @Test
     public void createSession_invalidSessionPassed_throwException() throws Exception {
-        CreateSession session = new CreateSession();
-        session.setName("A");
-        session.setDescription("Learn all about it.");
-        session.setLevel(null);
-        session.setPresenter("John/Doe");
-        session.setDuration(null);
-
         Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
-        Object[] parameters = new Object[]{session};
+        Object[] parameters = new Object[]{stubResource.invalidCreateSession};
 
         violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
                 method, parameters);

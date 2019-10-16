@@ -4,18 +4,13 @@ import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,28 +28,20 @@ public class UpdateSessionUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<UpdateSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private UpdateSessionUseCase updateSessionUseCase;
-    private Session session = null;
 
     @Before
     public void setUp() throws Exception {
-        session = new Session();
-        session.setVersion(1);
-        session.setId(SESSION_ID);
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
         sessionRepository = mock(SessionRepository.class);
         updateSessionUseCase = new UpdateSessionUseCase(sessionRepository);
 
-        when(sessionRepository.updateSession(SESSION_ID, session))
-                .thenReturn(session);
+        when(sessionRepository.updateSession(SESSION_ID, stubResource.session))
+                .thenReturn(stubResource.session);
 
         when(sessionRepository.sessionExists(SESSION_ID))
                 .thenReturn(Boolean.TRUE);
@@ -65,7 +52,6 @@ public class UpdateSessionUseCaseTest {
         sessionRepository = null;
         updateSessionUseCase = null;
         violations = null;
-        session = null;
     }
 
     @Test
@@ -92,11 +78,13 @@ public class UpdateSessionUseCaseTest {
 
     @Test(expected = SessionNotFoundException.class)
     public void updateSession_unknownIdPassed_throwException() {
-        updateSessionUseCase.updateSession("cd4c770a-e53c-4d19-8393-3b37ec811b66", session);
+        updateSessionUseCase.updateSession("cd4c770a-e53c-4d19-8393-3b37ec811b66", stubResource.session);
     }
 
     @Test
     public void updateSession_invalidModifiedSessionPassed_throwException() throws Exception {
+        Session session = stubResource.session;
+
         session.setName("A");
         session.setDescription("two words");
         session.setVersion(-1);
@@ -116,6 +104,8 @@ public class UpdateSessionUseCaseTest {
     public void updateSession_validModifiedSessionPassed_returnUpdatedSession() throws Exception {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Session> sessionArgumentCaptor = ArgumentCaptor.forClass(Session.class);
+
+        Session session = stubResource.session;
 
         session.setName("Using Angular Pipes");
         session.setDescription("Learn all about the new pipes in Angular");

@@ -6,18 +6,16 @@ import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.usecase.DataStubResource;
 import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,54 +32,26 @@ public class FindEventUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private Set<ConstraintViolation<FindEventUseCase>> violations;
     private EventRepository eventRepository;
     private FindEventUseCase findEventUseCase;
-    private Event event;
 
     @Before
     public void setUp() throws Exception {
-        LocalDateTime startDate = LocalDateTime.of(2036, 9, 26,
-                10, 0, 0);
-
-        Session session = new Session();
-        session.setVersion(1);
-        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
-        Location location = new Location();
-        location.setCountry("United States");
-        location.setCity("New York");
-        location.setAddress("2695 Frederick Douglass Blvd");
-
-        event = new Event();
-        event.setVersion(2);
-        event.setId("eb3a377c-3742-43ac-8d87-35534de2db8f");
-        event.setName("Angular Connect");
-        event.setImageUrl("http://localhost/images/angularconnect-shield.png");
-        event.setOnlineUrl("https://hangouts.google.com");
-        event.setLocation(location);
-        event.setPrice(1.00);
-        event.setStartDate(startDate);
-        event.setSessions(Collections.singleton(session));
-
         eventRepository = mock(EventRepository.class);
         findEventUseCase = new FindEventUseCase(eventRepository);
 
         when(eventRepository.getEventById(EVENT_ID))
-                .thenReturn(event);
+                .thenReturn(stubResource.event);
     }
 
     @After
     public void tearDown() throws Exception {
         eventRepository = null;
         findEventUseCase = null;
-        event = null;
         violations = null;
     }
 

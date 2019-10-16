@@ -5,15 +5,19 @@ import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.usecase.DataStubResource;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,46 +33,22 @@ public class FindEventsUseCaseTest {
     private static final Sort sort = Sort.by(Sort.Direction.ASC, "name", "startDate");
     private static final Pageable pageable = PageRequest.of(0, 25, sort);
 
+    @Rule
+    public DataStubResource stubResource = new DataStubResource();
+
     private EventRepository eventRepository;
     private FindEventsUseCase findEventsUseCase;
-    private Event event;
 
     @Before
     public void setUp() throws Exception {
         LocalDateTime startDate = LocalDateTime.of(2036, 9, 26,
                 10, 0, 0);
 
-        Session session = new Session();
-        session.setVersion(1);
-        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
-
-        Location location = new Location();
-        location.setCountry("United States");
-        location.setCity("New York");
-        location.setAddress("2695 Frederick Douglass Blvd");
-
-        event = new Event();
-        event.setVersion(2);
-        event.setId("eb3a377c-3742-43ac-8d87-35534de2db8f");
-        event.setName("Angular Connect");
-        event.setImageUrl("http://localhost/images/angularconnect-shield.png");
-        event.setOnlineUrl("https://hangouts.google.com");
-        event.setLocation(location);
-        event.setPrice(1.00);
-        event.setStartDate(startDate);
-        event.setSessions(Collections.singleton(session));
-
         eventRepository = mock(EventRepository.class);
         findEventsUseCase = new FindEventsUseCase(eventRepository);
 
         when(eventRepository.getAllEvents(null, pageable))
-                .thenReturn(new PageImpl<>(Collections.singletonList(event)));
+                .thenReturn(new PageImpl<>(Collections.singletonList(stubResource.event)));
 
         when(eventRepository.getAllEvents(UNKNOWN_QUERY, pageable))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
@@ -78,7 +58,6 @@ public class FindEventsUseCaseTest {
     public void tearDown() throws Exception {
         eventRepository = null;
         findEventsUseCase = null;
-        event = null;
     }
 
     @Test
@@ -114,7 +93,7 @@ public class FindEventsUseCaseTest {
         List<Object> anyOfLocationOnlineUrl = Arrays.asList(foundEvent.getOnlineUrl(), foundEvent.getLocation());
 
         assertThat(argumentCaptor.getAllValues().get(0), is(nullValue()));
-        assertThat(foundEvent.getId(), is(event.getId()));
+        assertThat(foundEvent.getId(), is(stubResource.event.getId()));
         assertThat(foundEvent.getName(), is("Angular Connect"));
         assertThat(foundEvent.getSessions().size(), is(1));
         assertThat(foundEvent.getPrice(), is(1.00));
