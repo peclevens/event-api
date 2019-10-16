@@ -1,12 +1,13 @@
 package com.clivenspetit.events.domain.session;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -20,21 +21,11 @@ import static org.junit.Assert.*;
  */
 public class SessionTest {
 
-    private static ValidatorFactory validatorFactory;
-    private static Validator validator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<Session>> violations;
     private Session session;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -59,13 +50,13 @@ public class SessionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentPassed_throwException() {
-        violations = validator.validate(null);
+        violations = validationResource.validator.validate(null);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void validSessionPassed_returnTrue() {
-        violations = validator.validate(session);
+        violations = validationResource.validator.validate(session);
         assertTrue("Valid session should pass.", violations.isEmpty());
     }
 
@@ -80,7 +71,7 @@ public class SessionTest {
         session.setDuration(null);
         session.setVoters(new LinkedHashSet<>(Arrays.asList("voter/1", "voter2")));
 
-        violations = validator.validate(session);
+        violations = validationResource.validator.validate(session);
         assertEquals(8, violations.size());
     }
 }

@@ -4,13 +4,14 @@ import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import org.junit.*;
+import com.clivenspetit.events.usecase.ValidationResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 import java.time.LocalTime;
 import java.util.Set;
@@ -27,25 +28,13 @@ public class CreateSessionUseCaseTest {
 
     private static final Id NEW_SESSION_ID = new Id("f50425ee-dca3-4ada-93cc-09993db07311");
 
-    private static ValidatorFactory validatorFactory;
-    private static ExecutableValidator executableValidator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<CreateSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private CreateSessionUseCase createSessionUseCase;
     private CreateSession session = null;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        executableValidator = validatorFactory.getValidator().forExecutables();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-        executableValidator = null;
-        validatorFactory = null;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -76,7 +65,8 @@ public class CreateSessionUseCaseTest {
         Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
         Object[] parameters = new Object[]{null};
 
-        violations = executableValidator.validateParameters(createSessionUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
+                method, parameters);
 
         assertThat(violations.size(), is(1));
     }
@@ -105,7 +95,8 @@ public class CreateSessionUseCaseTest {
         Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
         Object[] parameters = new Object[]{session};
 
-        violations = executableValidator.validateParameters(createSessionUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
+                method, parameters);
 
         assertThat(violations, hasSize(5));
     }

@@ -1,16 +1,13 @@
 package com.clivenspetit.events.domain.event;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.session.CreateSession;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -23,24 +20,14 @@ import static org.junit.Assert.*;
  */
 public class CreateEventTest {
 
-    private static ValidatorFactory validatorFactory;
-    private static Validator validator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<CreateEvent>> violations;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentPassed_throwException() {
-        violations = validator.validate(null);
+        violations = validationResource.validator.validate(null);
         assertFalse(violations.isEmpty());
     }
 
@@ -70,7 +57,7 @@ public class CreateEventTest {
         event.setStartDate(startDate);
         event.setSessions(Collections.singleton(session));
 
-        violations = validator.validate(event);
+        violations = validationResource.validator.validate(event);
         assertTrue("Valid event should pass.", violations.isEmpty());
     }
 
@@ -100,7 +87,7 @@ public class CreateEventTest {
         event.setStartDate(startDate);
         event.setSessions(Collections.singleton(session));
 
-        violations = validator.validate(event);
+        violations = validationResource.validator.validate(event);
         assertEquals(13, violations.size());
     }
 }

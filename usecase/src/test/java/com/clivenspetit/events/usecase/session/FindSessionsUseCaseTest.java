@@ -3,14 +3,13 @@ package com.clivenspetit.events.usecase.session;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -29,25 +28,10 @@ public class FindSessionsUseCaseTest {
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
     private static final Sort sort = Sort.by(Sort.Direction.ASC, "level", "duration");
 
-    private static ValidatorFactory validatorFactory;
-    private static ExecutableValidator executableValidator;
     private Set<ConstraintViolation<FindSessionsUseCase>> violations;
     private SessionRepository sessionRepository;
     private FindSessionsUseCase findSessionsUseCase;
     private List<Session> sessions;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        executableValidator = validatorFactory.getValidator().forExecutables();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-        executableValidator = null;
-        validatorFactory = null;
-    }
 
     @Before
     public void setUp() throws Exception {

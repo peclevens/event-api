@@ -1,13 +1,10 @@
 package com.clivenspetit.events.domain.common;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import com.clivenspetit.events.domain.ValidationResource;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -18,25 +15,15 @@ import static org.junit.Assert.assertTrue;
  */
 public class LocationTest {
 
-    private static ValidatorFactory validatorFactory;
-    private static Validator validator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<Location>> violations;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-    }
 
     @Test
     public void invalidLocationPassed_returnConstraintViolations() {
         // Test required fields
-        violations = validator.validate(new Location());
+        violations = validationResource.validator.validate(new Location());
         assertEquals(3, violations.size());
 
         // Test invalid location
@@ -46,7 +33,7 @@ public class LocationTest {
         location.setCity(null);
         location.setCountry(null);
 
-        violations = validator.validate(location);
+        violations = validationResource.validator.validate(location);
         assertEquals(4, violations.size());
     }
 
@@ -58,7 +45,7 @@ public class LocationTest {
         location.setCity("Some City");
         location.setCountry("Some Country");
 
-        violations = validator.validate(location);
+        violations = validationResource.validator.validate(location);
         assertTrue("Valid location should pass.", violations.isEmpty());
     }
 }

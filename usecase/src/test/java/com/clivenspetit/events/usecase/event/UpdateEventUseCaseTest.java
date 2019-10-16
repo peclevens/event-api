@@ -6,13 +6,14 @@ import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
-import org.junit.*;
+import com.clivenspetit.events.usecase.ValidationResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,25 +33,13 @@ public class UpdateEventUseCaseTest {
 
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
 
-    private static ValidatorFactory validatorFactory;
-    private static ExecutableValidator executableValidator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<UpdateEventUseCase>> violations;
     private EventRepository eventRepository;
     private UpdateEventUseCase updateEventUseCase;
     private Event event = null;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        executableValidator = validatorFactory.getValidator().forExecutables();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-        executableValidator = null;
-        validatorFactory = null;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -106,7 +95,7 @@ public class UpdateEventUseCaseTest {
         Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
         Object[] parameters = new Object[]{null, null};
 
-        violations = executableValidator.validateParameters(updateEventUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
 
         assertThat("Null arguments should not pass.", violations.size(), is(2));
     }
@@ -116,7 +105,7 @@ public class UpdateEventUseCaseTest {
         Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
         Object[] parameters = new Object[]{"id", new Event()};
 
-        violations = executableValidator.validateParameters(updateEventUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
 
         assertThat("Invalid arguments should not pass.", violations.size(), is(6));
     }
@@ -140,7 +129,7 @@ public class UpdateEventUseCaseTest {
         Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
         Object[] parameters = new Object[]{EVENT_ID, event};
 
-        violations = executableValidator.validateParameters(updateEventUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
 
         assertThat("Invalid arguments should not pass.", violations.size(), is(4));
     }

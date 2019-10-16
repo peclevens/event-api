@@ -4,13 +4,14 @@ import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import org.junit.*;
+import com.clivenspetit.events.usecase.ValidationResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -29,25 +30,13 @@ public class UpdateSessionUseCaseTest {
 
     private static final String SESSION_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
 
-    private static ValidatorFactory validatorFactory;
-    private static ExecutableValidator executableValidator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<UpdateSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private UpdateSessionUseCase updateSessionUseCase;
     private Session session = null;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        executableValidator = validatorFactory.getValidator().forExecutables();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-        executableValidator = null;
-        validatorFactory = null;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -84,7 +73,8 @@ public class UpdateSessionUseCaseTest {
         Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
         Object[] parameters = new Object[]{null, null};
 
-        violations = executableValidator.validateParameters(updateSessionUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
+                method, parameters);
 
         assertThat("Null arguments should not pass.", violations.size(), is(2));
     }
@@ -94,7 +84,8 @@ public class UpdateSessionUseCaseTest {
         Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
         Object[] parameters = new Object[]{"id", new Session()};
 
-        violations = executableValidator.validateParameters(updateSessionUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
+                method, parameters);
 
         assertThat("Invalid arguments should not pass.", violations, hasSize(8));
     }
@@ -115,7 +106,8 @@ public class UpdateSessionUseCaseTest {
         Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
         Object[] parameters = new Object[]{SESSION_ID, session};
 
-        violations = executableValidator.validateParameters(updateSessionUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
+                method, parameters);
 
         assertThat("Invalid arguments should not pass.", violations, hasSize(5));
     }

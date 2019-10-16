@@ -6,13 +6,14 @@ import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.CreateSession;
-import org.junit.*;
+import com.clivenspetit.events.usecase.ValidationResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,25 +32,13 @@ public class CreateEventUseCaseTest {
 
     private static final Id NEW_EVENT_ID = new Id("0f366033-57c2-407a-8bf8-f057bd3487fd");
 
-    private static ValidatorFactory validatorFactory;
-    private static ExecutableValidator executableValidator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<CreateEventUseCase>> violations;
     private EventRepository eventRepository;
     private CreateEventUseCase createEventUseCase;
     private CreateEvent event = null;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        executableValidator = validatorFactory.getValidator().forExecutables();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-        executableValidator = null;
-        validatorFactory = null;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -97,7 +86,7 @@ public class CreateEventUseCaseTest {
         Method method = CreateEventUseCase.class.getMethod("createEvent", CreateEvent.class);
         Object[] parameters = new Object[]{null};
 
-        violations = executableValidator.validateParameters(createEventUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(createEventUseCase, method, parameters);
 
         assertThat(violations.size(), is(1));
     }
@@ -143,7 +132,7 @@ public class CreateEventUseCaseTest {
         Method method = CreateEventUseCase.class.getMethod("createEvent", CreateEvent.class);
         Object[] parameters = new Object[]{event};
 
-        violations = executableValidator.validateParameters(createEventUseCase, method, parameters);
+        violations = validationResource.executableValidator.validateParameters(createEventUseCase, method, parameters);
 
         assertEquals(13, violations.size());
     }

@@ -1,14 +1,15 @@
 package com.clivenspetit.events.domain.event;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.session.Session;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -23,23 +24,13 @@ import static org.junit.Assert.*;
  */
 public class EventTest {
 
-    private static ValidatorFactory validatorFactory;
-    private static Validator validator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<Event>> violations;
     private Session session = null;
     private Location location = null;
     private Event event = null;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -82,13 +73,13 @@ public class EventTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentPassed_throwException() {
-        violations = validator.validate(null);
+        violations = validationResource.validator.validate(null);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void validEventPassed_returnTrue() {
-        violations = validator.validate(event);
+        violations = validationResource.validator.validate(event);
         assertTrue("Valid event should pass.", violations.isEmpty());
     }
 
@@ -117,7 +108,7 @@ public class EventTest {
         event.setStartDate(event.getStartDate().withYear(2018));
         event.setSessions(Collections.singleton(session));
 
-        violations = validator.validate(event);
+        violations = validationResource.validator.validate(event);
         assertEquals(18, violations.size());
     }
 }

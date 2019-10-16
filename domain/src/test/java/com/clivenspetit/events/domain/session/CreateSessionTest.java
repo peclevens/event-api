@@ -1,14 +1,11 @@
 package com.clivenspetit.events.domain.session;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -19,24 +16,14 @@ import static org.junit.Assert.*;
  */
 public class CreateSessionTest {
 
-    private static ValidatorFactory validatorFactory;
-    private static Validator validator;
+    @ClassRule
+    public static final ValidationResource validationResource = new ValidationResource();
+
     private Set<ConstraintViolation<CreateSession>> violations;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        validatorFactory.close();
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentPassed_throwException() {
-        violations = validator.validate(null);
+        violations = validationResource.validator.validate(null);
         assertFalse(violations.isEmpty());
     }
 
@@ -49,7 +36,7 @@ public class CreateSessionTest {
         session.setPresenter("John Doe");
         session.setDuration(LocalTime.of(1, 0));
 
-        violations = validator.validate(session);
+        violations = validationResource.validator.validate(session);
         assertTrue("Valid session should pass.", violations.isEmpty());
     }
 
@@ -62,7 +49,7 @@ public class CreateSessionTest {
         session.setPresenter("John/Doe");
         session.setDuration(null);
 
-        violations = validator.validate(session);
+        violations = validationResource.validator.validate(session);
         assertEquals(5, violations.size());
     }
 }
