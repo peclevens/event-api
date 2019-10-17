@@ -7,6 +7,7 @@ import com.clivenspetit.events.domain.validation.constraints.Word;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalTime;
 
 /**
@@ -16,7 +17,9 @@ import java.time.LocalTime;
  *
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-public class CreateSession {
+public class CreateSession implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * Session name

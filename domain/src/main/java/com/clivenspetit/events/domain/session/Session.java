@@ -5,6 +5,7 @@ import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,7 +16,9 @@ import java.util.Set;
  *
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-public class Session extends CreateSession {
+public class Session extends CreateSession implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * The version of this object.

@@ -3,11 +3,14 @@ package com.clivenspetit.events.domain.common;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
-public class Location {
+public class Location implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * The version of this object.

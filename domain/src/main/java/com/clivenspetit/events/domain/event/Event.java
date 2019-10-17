@@ -8,6 +8,7 @@ import com.clivenspetit.events.domain.validation.constraints.Url;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,7 +21,9 @@ import java.util.Set;
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
  */
 @AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
-public class Event {
+public class Event implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * The version of this object.
