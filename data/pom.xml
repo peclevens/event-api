@@ -97,6 +97,18 @@
 
     <build>
         <plugins>
+            <!-- Maven Source plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <!-- Maven Javadoc plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
             <!-- Maven Jar plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
