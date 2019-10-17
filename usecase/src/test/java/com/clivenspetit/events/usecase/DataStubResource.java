@@ -42,9 +42,14 @@ public class DataStubResource extends ExternalResource {
 
     @Override
     protected void after() {
-        createSession = null;
-        location = null;
+        invalidCreateEvent = null;
         createEvent = null;
+        event = null;
+        invalidCreateSession = null;
+        createSession = null;
+        session = null;
+        location = null;
+        invalidLocation = null;
     }
 
     private void createValidSession() {
