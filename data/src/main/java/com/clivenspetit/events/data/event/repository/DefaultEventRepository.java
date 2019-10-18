@@ -84,7 +84,10 @@ public class DefaultEventRepository implements EventRepository {
 
                     return event;
                 })
-                .orElse(null);
+                .orElseGet(() -> {
+                    logger.info("Event not found. Id: {}", id);
+                    return null;
+                });
     }
 
     /**
