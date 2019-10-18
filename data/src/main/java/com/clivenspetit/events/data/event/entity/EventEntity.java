@@ -3,7 +3,7 @@ package com.clivenspetit.events.data.event.entity;
 import javax.persistence.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 @Entity
 @Table(name = "events")

@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class DefaultEventRepository implements EventRepository {
 
@@ -74,8 +74,8 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Find out whether an event exists or not by id.
      *
-     * @param id
-     * @return
+     * @param id The event id.
+     * @return Return true if exists, false otherwise.
      */
     @Override
     public Boolean eventExists(@UUID String id) {
@@ -85,9 +85,9 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Find / filter all events
      *
-     * @param query
-     * @param pageable
-     * @return
+     * @param query    A DSL friendly query string to generate SQL query filters from.
+     * @param pageable Combination of size, page and sort information to retrieve data from a datasource.
+     * @return A paginated list of events.
      */
     @Override
     public Page<Event> getAllEvents(String query, Pageable pageable) {
@@ -97,8 +97,8 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Create a new event.
      *
-     * @param event
-     * @return
+     * @param event Event creation object to store to a datasource.
+     * @return The newly created event id.
      */
     @Override
     public Id createEvent(@NotNull @Valid CreateEvent event) {
@@ -108,9 +108,9 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Update existing event.
      *
-     * @param id
-     * @param event
-     * @return
+     * @param id    The event id.
+     * @param event A modified event object to store to a datasource.
+     * @return The newly updated event.
      */
     @Override
     public Event updateEvent(@UUID String id, @NotNull @Valid Event event) {
@@ -120,7 +120,7 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Delete event by id.
      *
-     * @param id
+     * @param id The event id.
      */
     @Override
     public void deleteEventById(@UUID String id) {
