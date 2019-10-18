@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import javax.cache.Cache;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
 /**
  * @author Clivens Petit <clivens.petit@magicsoftbay.com>
@@ -39,8 +38,8 @@ public class DefaultEventRepository implements EventRepository {
     /**
      * Find event by id.
      *
-     * @param id
-     * @return
+     * @param id The event id.
+     * @return The event matching the id passed.
      */
     @Override
     public Event getEventById(@UUID String id) {
@@ -51,24 +50,25 @@ public class DefaultEventRepository implements EventRepository {
 
         // Find event in cache
         Event cacheEvent = eventCache.get(cacheKey);
+        if (cacheEvent != null) {
+            logger.info("Event found in cache. Id: {}, ", id);
+            return cacheEvent;
+        }
 
-        return Optional.ofNullable(cacheEvent)
-                .map(event -> { // Return cache event if exists
-                    logger.info("Event found in cache. Id: {}, ", id);
+        // Find event from database
+        return jpaEventRepository.findByEventId(id)
+                .map(eventEntity -> {
+                    Event event = eventMapper.from(eventEntity);
+
+                    // Cache event if found
+                    if (event != null) {
+                        logger.info("Event found in db. Id: {}", id);
+                        eventCache.put(cacheKey, event);
+                    }
+
                     return event;
                 })
-                .orElseGet(() -> jpaEventRepository.findByEventId(id)
-                        .map(eventEntity -> {
-                            Event event = eventMapper.from(eventEntity);
-
-                            // Cache event if found
-                            if (event != null) {
-                                logger.info("Event found in db. Id: {}", id);
-                                eventCache.put(cacheKey, event);
-                            }
-
-                            return event;
-                        }).orElse(null));
+                .orElse(null);
     }
 
     /**
