@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class CreateSessionUseCaseTest {
 

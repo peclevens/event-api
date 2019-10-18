@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class FindEventsUseCase {
 

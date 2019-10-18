@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class CreateEventUseCaseTest {
 

@@ -5,7 +5,7 @@ import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class DownvoteSessionUseCase {
 

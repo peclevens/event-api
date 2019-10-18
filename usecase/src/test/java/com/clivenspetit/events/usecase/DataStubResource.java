@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class DataStubResource extends ExternalResource {
 

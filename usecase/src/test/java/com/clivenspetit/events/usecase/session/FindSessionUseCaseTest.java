@@ -19,7 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class FindSessionUseCaseTest {
 

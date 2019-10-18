@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class DeleteEventsUseCaseTest {
 

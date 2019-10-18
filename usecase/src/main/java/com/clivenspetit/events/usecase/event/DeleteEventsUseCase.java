@@ -3,7 +3,7 @@ package com.clivenspetit.events.usecase.event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class DeleteEventsUseCase {
 

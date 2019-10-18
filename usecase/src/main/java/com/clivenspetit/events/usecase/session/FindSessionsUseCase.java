@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class FindSessionsUseCase {
 

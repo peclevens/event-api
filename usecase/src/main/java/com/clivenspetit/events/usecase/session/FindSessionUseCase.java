@@ -8,7 +8,7 @@ import com.clivenspetit.events.domain.validation.constraints.UUID;
 import java.util.Optional;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class FindSessionUseCase {
 
