@@ -15,7 +15,7 @@ import java.time.LocalTime;
  * <p>
  * Event session model
  *
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class CreateSession implements Serializable {
 

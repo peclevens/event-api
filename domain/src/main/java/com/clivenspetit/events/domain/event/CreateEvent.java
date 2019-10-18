@@ -16,7 +16,7 @@ import java.util.Set;
  * <p>
  * CreateEvent item
  *
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 @AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
 public class CreateEvent {

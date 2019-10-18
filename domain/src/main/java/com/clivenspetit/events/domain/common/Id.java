@@ -3,7 +3,7 @@ package com.clivenspetit.events.domain.common;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class Id {
 

@@ -5,7 +5,7 @@ import com.clivenspetit.events.domain.validation.constraints.IterableOfStringPat
 import java.util.List;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class IterableOfStringPatternTest {
 

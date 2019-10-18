@@ -13,78 +13,78 @@ import java.util.List;
 /**
  * Sessions CRUD operations management.
  *
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public interface SessionRepository {
 
     /**
      * Find session by id.
      *
-     * @param id
-     * @return
+     * @param id The session id.
+     * @return The session matching the id passed.
      */
     Session getSessionById(@UUID String id);
 
     /**
      * Find all sessions by event id.
      *
-     * @param eventId
-     * @param query
-     * @param sort
-     * @return
+     * @param eventId The event id.
+     * @param query   A DSL friendly query string to generate SQL query filters from.
+     * @param sort    The sort order of the resulting data.
+     * @return A list of sessions.
      */
     List<Session> getSessionsByEventId(@UUID String eventId, String query, Sort sort);
 
     /**
      * Find out whether a session exists or not by id.
      *
-     * @param id
-     * @return
+     * @param id The session id.
+     * @return Return true if exists, false otherwise.
      */
     Boolean sessionExists(@UUID String id);
 
     /**
      * Create new session.
      *
-     * @param session
-     * @return
+     * @param session Session creation object to store to a datasource.
+     * @return The newly created session id.
      */
     Id createSession(@NotNull @Valid CreateSession session);
 
     /**
      * Update existing session.
      *
-     * @param id
-     * @param session
-     * @return
+     * @param id      The session id.
+     * @param session A modified session object to store to a datasource.
+     * @return The newly updated session.
      */
     Session updateSession(@UUID String id, @NotNull @Valid Session session);
 
     /**
      * Delete session by id.
      *
-     * @param id
+     * @param id The session id.
      */
     void deleteSessionById(@UUID String id);
 
     /**
      * Delete all sessions for a specific event.
      *
-     * @param eventId
+     * @param eventId The event id.
      */
     void deleteAllSessionsByEventId(@UUID String eventId);
 
     /**
      * Upvote session by id.
      *
-     * @param id
+     * @param id The session id.
      */
     void upVoteSession(@UUID String id);
 
     /**
      * Downvote session by id.
      *
-     * @param id
+     * @param id The session id.
      */
     void downVoteSession(@UUID String id);
 }

@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>
  * Event session model
  *
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class Session extends CreateSession implements Serializable {
 

@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class CreateSessionTest {
 

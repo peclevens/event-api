@@ -13,56 +13,56 @@ import javax.validation.constraints.NotNull;
 /**
  * Event CRUD operations management.
  *
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public interface EventRepository {
 
     /**
      * Find event by id.
      *
-     * @param id
-     * @return
+     * @param id The event id.
+     * @return The event matching the id passed.
      */
     Event getEventById(@UUID String id);
 
     /**
      * Find out whether an event exists or not by id.
      *
-     * @param id
-     * @return
+     * @param id The event id.
+     * @return Return true if exists, false otherwise.
      */
     Boolean eventExists(@UUID String id);
 
     /**
      * Find / filter all events
      *
-     * @param query
-     * @param pageable
-     * @return
+     * @param query    A DSL friendly query string to generate SQL query filters from.
+     * @param pageable Combination of size, page and sort information to retrieve data from a datasource.
+     * @return A paginated list of events.
      */
     Page<Event> getAllEvents(String query, Pageable pageable);
 
     /**
      * Create a new event.
      *
-     * @param event
-     * @return
+     * @param event Event creation object to store to a datasource.
+     * @return The newly created event id.
      */
     Id createEvent(@NotNull @Valid CreateEvent event);
 
     /**
      * Update existing event.
      *
-     * @param id
-     * @param event
-     * @return
+     * @param id    The event id.
+     * @param event A modified event object to store to a datasource.
+     * @return The newly updated event.
      */
     Event updateEvent(@UUID String id, @NotNull @Valid Event event);
 
     /**
      * Delete event by id.
      *
-     * @param id
+     * @param id The event id.
      */
     void deleteEventById(@UUID String id);
 

@@ -7,7 +7,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public final class ValidationResource extends ExternalResource {
 

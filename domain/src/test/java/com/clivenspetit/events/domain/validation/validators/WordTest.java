@@ -3,7 +3,7 @@ package com.clivenspetit.events.domain.validation.validators;
 import com.clivenspetit.events.domain.validation.constraints.Word;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 public class WordTest {
 

@@ -3,7 +3,7 @@ package com.clivenspetit.events.domain.validation.validators;
 import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 
 /**
- * @author Clivens Petit <clivens.petit@magicsoftbay.com>
+ * @author Clivens Petit
  */
 @AnyOf(fields = {"fieldOne", "fieldTwo"}, message = "Field one or field two is required. Both of them work fine too.")
 public class AnyOfTest {
