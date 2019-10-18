@@ -27,13 +27,6 @@
             <artifactId>cache-api</artifactId>
         </dependency>
 
-        <!-- Hazelcast, Java Cache API Implementation -->
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Mapstruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -44,6 +37,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Hazelcast, Java Cache API Implementation -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Spring Test -->
