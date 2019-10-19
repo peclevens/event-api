@@ -21,23 +21,28 @@ import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import org.junit.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
-import java.util.Optional;
 
 import static com.clivenspetit.events.data.event.repository.DefaultEventRepository.EVENT_CACHE_KEY_TPL;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Clivens Petit
  */
+@DataJpaTest
+@RunWith(SpringRunner.class)
 public class DefaultEventRepositoryTest {
 
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
@@ -46,7 +51,9 @@ public class DefaultEventRepositoryTest {
     private static MutableConfiguration<String, Event> eventMutableConfiguration = new MutableConfiguration<>();
     private static Cache<String, Event> eventCache;
 
+    @Autowired
     private JpaEventRepository jpaEventRepository;
+
     private EventRepository eventRepository;
 
     @BeforeClass
@@ -64,16 +71,11 @@ public class DefaultEventRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        jpaEventRepository = mock(JpaEventRepository.class);
-
         EventEntity eventEntity = new EventEntity();
         eventEntity.setEventId(EVENT_ID);
         eventEntity.setName("Angular Connect");
 
         eventRepository = new DefaultEventRepository(jpaEventRepository, eventCache, EventMapper.INSTANCE);
-
-        when(jpaEventRepository.findByEventId(EVENT_ID))
-                .thenReturn(Optional.of(eventEntity));
     }
 
     @After
@@ -87,9 +89,7 @@ public class DefaultEventRepositoryTest {
 
         Event event = eventRepository.getEventById(EVENT_ID);
 
-        verify(jpaEventRepository, times(1))
-                .findByEventId(EVENT_ID);
-
+        assertThat(event, is(notNullValue()));
         assertThat(EVENT_ID, is(event.getId()));
         assertTrue("Event should be in the cache.", eventCache.containsKey(cacheKey));
     }
