@@ -37,7 +37,7 @@ import java.util.Set;
  * @author Clivens Petit
  */
 @AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
-public class Event implements Serializable {
+public final class Event implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -97,77 +97,132 @@ public class Event implements Serializable {
      * Event sessions
      */
     @Valid
-    private Set<Session> sessions = new LinkedHashSet<>();
+    private Set<Session> sessions;
+
+    private Event(Event.Builder builder) {
+        this.version = builder.version;
+        this.id = builder.id;
+        this.name = builder.name;
+        this.startDate = builder.startDate;
+        this.price = builder.price;
+        this.imageUrl = builder.imageUrl;
+        this.onlineUrl = builder.onlineUrl;
+        this.location = builder.location;
+        this.sessions = builder.sessions != null ? builder.sessions : new LinkedHashSet<>();
+    }
+
+    public static Event.Builder builder() {
+        return new Event.Builder();
+    }
 
     public Integer getVersion() {
         return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
     public Double getPrice() {
         return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getOnlineUrl() {
         return onlineUrl;
-    }
-
-    public void setOnlineUrl(String onlineUrl) {
-        this.onlineUrl = onlineUrl;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public Set<Session> getSessions() {
         return sessions;
     }
 
-    public void setSessions(Set<Session> sessions) {
-        this.sessions = sessions;
+    public static final class Builder {
+        private Integer version = 0;
+        private String id;
+        private String name;
+        private LocalDateTime startDate;
+        private Double price = 0.0D;
+        private String imageUrl;
+        private String onlineUrl;
+        private Location location;
+        private Set<Session> sessions;
+
+        private Builder() {
+
+        }
+
+        public Builder version(Integer version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder startDate(LocalDateTime startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder price(Double price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder onlineUrl(String onlineUrl) {
+            this.onlineUrl = onlineUrl;
+            return this;
+        }
+
+        public Builder location(Location location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder sessions(Set<Session> sessions) {
+            this.sessions = sessions;
+            return this;
+        }
+
+        public Event build() {
+            Event event = new Event(this);
+            event.imageUrl = this.imageUrl;
+            event.sessions = this.sessions;
+            event.startDate = this.startDate;
+            event.name = this.name;
+            event.version = this.version;
+            event.id = this.id;
+            event.onlineUrl = this.onlineUrl;
+            event.location = this.location;
+            event.price = this.price;
+            return event;
+        }
     }
 }

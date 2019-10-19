@@ -33,7 +33,7 @@ import java.time.LocalTime;
  *
  * @author Clivens Petit
  */
-public class CreateSession implements Serializable {
+public final class CreateSession implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -71,43 +71,82 @@ public class CreateSession implements Serializable {
     @NotBlank(message = "Presenter name is required.")
     private String presenter;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
-    public LocalTime getDuration() {
-        return duration;
-    }
-
-    public void setDuration(LocalTime duration) {
-        this.duration = duration;
-    }
-
-    public String getPresenter() {
-        return presenter;
-    }
-
-    public void setPresenter(String presenter) {
-        this.presenter = presenter;
+    private CreateSession(CreateSession.Builder builder) {
+        this.name = builder.name;
+        this.description = builder.description;
+        this.level = builder.level;
+        this.duration = builder.duration;
+        this.presenter = builder.presenter;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public LocalTime getDuration() {
+        return duration;
+    }
+
+    public String getPresenter() {
+        return presenter;
+    }
+
+    public static CreateSession.Builder builder() {
+        return new CreateSession.Builder();
+    }
+
+    public static final class Builder {
+        private String name;
+        private String description;
+        private Level level;
+        private LocalTime duration;
+        private String presenter;
+
+        private Builder() {
+
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder level(Level level) {
+            this.level = level;
+            return this;
+        }
+
+        public Builder duration(LocalTime duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public Builder presenter(String presenter) {
+            this.presenter = presenter;
+            return this;
+        }
+
+        public CreateSession build() {
+            CreateSession createSession = new CreateSession(this);
+            createSession.level = this.level;
+            createSession.description = this.description;
+            createSession.presenter = this.presenter;
+            createSession.name = this.name;
+            createSession.duration = this.duration;
+            return createSession;
+        }
     }
 }

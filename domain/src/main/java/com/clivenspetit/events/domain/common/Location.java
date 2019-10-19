@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * @author Clivens Petit
  */
-public class Location implements Serializable {
+public final class Location implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -46,36 +46,70 @@ public class Location implements Serializable {
     @NotBlank(message = "Country is required.")
     private String country;
 
+    private Location(Location.Builder builder) {
+        this.version = builder.version;
+        this.address = builder.address;
+        this.city = builder.city;
+        this.country = builder.country;
+    }
+
     public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public static Location.Builder builder() {
+        return new Location.Builder();
+    }
+
+    public static final class Builder {
+        private Integer version = 0;
+        private String address;
+        private String city;
+        private String country;
+
+        private Builder() {
+
+        }
+
+        public Builder version(Integer version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder city(String city) {
+            this.city = city;
+            return this;
+        }
+
+        public Builder country(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public Location build() {
+            Location location = new Location(this);
+            location.version = version;
+            location.address = address;
+            location.city = city;
+            location.country = country;
+            return location;
+        }
     }
 }

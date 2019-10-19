@@ -24,7 +24,7 @@ import com.clivenspetit.events.domain.validation.constraints.Url;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -35,7 +35,7 @@ import java.util.Set;
  * @author Clivens Petit
  */
 @AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
-public class CreateEvent {
+public final class CreateEvent {
 
     /**
      * Event name
@@ -82,61 +82,108 @@ public class CreateEvent {
      * Event sessions
      */
     @Valid
-    private Set<CreateSession> sessions = new HashSet<>();
+    private Set<CreateSession> sessions;
 
-    public Set<CreateSession> getSessions() {
-        return sessions;
-    }
-
-    public void setSessions(Set<CreateSession> sessions) {
-        this.sessions = sessions;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getOnlineUrl() {
-        return onlineUrl;
-    }
-
-    public void setOnlineUrl(String onlineUrl) {
-        this.onlineUrl = onlineUrl;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
+    private CreateEvent(CreateEvent.Builder builder) {
+        this.name = builder.name;
+        this.imageUrl = builder.imageUrl;
+        this.onlineUrl = builder.onlineUrl;
+        this.location = builder.location;
+        this.price = builder.price;
+        this.startDate = builder.startDate;
+        this.sessions = builder.sessions != null ? builder.sessions : new LinkedHashSet<>();
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getOnlineUrl() {
+        return onlineUrl;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public Set<CreateSession> getSessions() {
+        return sessions;
+    }
+
+    public static CreateEvent.Builder builder() {
+        return new CreateEvent.Builder();
+    }
+
+    public static final class Builder {
+        private String name;
+        private String imageUrl;
+        private String onlineUrl;
+        private Location location;
+        private Double price = 0.0D;
+        private LocalDateTime startDate;
+        private Set<CreateSession> sessions;
+
+        private Builder() {
+
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder onlineUrl(String onlineUrl) {
+            this.onlineUrl = onlineUrl;
+            return this;
+        }
+
+        public Builder location(Location location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder price(Double price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder startDate(LocalDateTime startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder sessions(Set<CreateSession> sessions) {
+            this.sessions = sessions;
+            return this;
+        }
+
+        public CreateEvent build() {
+            CreateEvent createEvent = new CreateEvent(this);
+            createEvent.price = this.price;
+            createEvent.onlineUrl = this.onlineUrl;
+            createEvent.imageUrl = this.imageUrl;
+            createEvent.sessions = this.sessions;
+            createEvent.startDate = this.startDate;
+            createEvent.name = this.name;
+            createEvent.location = this.location;
+            return createEvent;
+        }
     }
 }

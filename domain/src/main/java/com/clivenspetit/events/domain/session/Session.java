@@ -16,12 +16,19 @@
 
 package com.clivenspetit.events.domain.session;
 
+import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.validation.constraints.IterableOfStringPattern;
+import com.clivenspetit.events.domain.validation.constraints.Name;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
+import com.clivenspetit.events.domain.validation.constraints.Word;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,7 +39,7 @@ import java.util.Set;
  *
  * @author Clivens Petit
  */
-public class Session extends CreateSession implements Serializable {
+public final class Session implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -49,6 +56,40 @@ public class Session extends CreateSession implements Serializable {
     private String id;
 
     /**
+     * Session name
+     */
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
+    @NotBlank(message = "Name is required.")
+    private String name;
+
+    /**
+     * Session description
+     */
+    @NotBlank(message = "Description is required.")
+    @Word(min = 5, max = 500, message = "Description should be between {min} to {max} words.")
+    private String description;
+
+    /**
+     * Session level
+     */
+    @NotNull(message = "Level is required.")
+    private Level level;
+
+    /**
+     * Session duration
+     */
+    @NotNull(message = "Duration is required.")
+    private LocalTime duration;
+
+    /**
+     * The name of the speaker of the session
+     */
+    @Name(message = "Presenter name should contain only characters from a-zA-Z and symbols like ',. -")
+    @Size(min = 1, max = 120, message = "Presenter name should be between {min} and {max} characters.")
+    @NotBlank(message = "Presenter name is required.")
+    private String presenter;
+
+    /**
      * List of voters.
      */
     @Valid
@@ -56,27 +97,118 @@ public class Session extends CreateSession implements Serializable {
             message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
     private Set<String> voters = new LinkedHashSet<>();
 
-    public Integer getVersion() {
-        return version;
+    private Session(Session.Builder builder) {
+        this.version = builder.version;
+        this.id = builder.id;
+        this.name = builder.name;
+        this.description = builder.description;
+        this.level = builder.level;
+        this.duration = builder.duration;
+        this.presenter = builder.presenter;
+        this.voters = builder.voters;
     }
 
-    public void setVersion(Integer version) {
-        this.version = version;
+    public Integer getVersion() {
+        return version;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public LocalTime getDuration() {
+        return duration;
+    }
+
+    public String getPresenter() {
+        return presenter;
     }
 
     public Set<String> getVoters() {
         return voters;
     }
 
-    public void setVoters(Set<String> voters) {
-        this.voters = voters;
+    public static Session.Builder builder() {
+        return new Session.Builder();
+    }
+
+    public static final class Builder {
+        private Integer version = 0;
+        private String id;
+        private String name;
+        private String description;
+        private Level level;
+        private LocalTime duration;
+        private String presenter;
+        private Set<String> voters = new LinkedHashSet<>();
+
+        private Builder() {
+
+        }
+
+        public Builder version(Integer version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder level(Level level) {
+            this.level = level;
+            return this;
+        }
+
+        public Builder duration(LocalTime duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public Builder presenter(String presenter) {
+            this.presenter = presenter;
+            return this;
+        }
+
+        public Builder voters(Set<String> voters) {
+            this.voters = voters;
+            return this;
+        }
+
+        public Session build() {
+            Session session = new Session(this);
+            session.version = this.version;
+            session.description = this.description;
+            session.presenter = this.presenter;
+            session.id = this.id;
+            session.voters = this.voters;
+            session.name = this.name;
+            session.duration = this.duration;
+            session.level = this.level;
+            return session;
+        }
     }
 }
