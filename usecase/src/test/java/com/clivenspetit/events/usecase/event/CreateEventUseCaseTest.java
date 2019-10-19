@@ -16,12 +16,15 @@
 
 package com.clivenspetit.events.usecase.event;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.event.CreateEvent;
+import com.clivenspetit.events.domain.event.CreateEventMother;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
-import com.clivenspetit.events.usecase.DataStubResource;
-import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
@@ -43,19 +46,18 @@ public class CreateEventUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private Set<ConstraintViolation<CreateEventUseCase>> violations;
     private EventRepository eventRepository;
     private CreateEventUseCase createEventUseCase;
+    private CreateEvent event;
 
     @Before
     public void setUp() throws Exception {
         eventRepository = mock(EventRepository.class);
         createEventUseCase = new CreateEventUseCase(eventRepository);
 
-        when(eventRepository.createEvent(stubResource.createEvent))
+        event = CreateEventMother.validEvent().build();
+        when(eventRepository.createEvent(event))
                 .thenReturn(NEW_EVENT_ID);
     }
 
@@ -64,6 +66,7 @@ public class CreateEventUseCaseTest {
         eventRepository = null;
         createEventUseCase = null;
         violations = null;
+        event = null;
     }
 
     @Test
@@ -80,7 +83,7 @@ public class CreateEventUseCaseTest {
     public void createEvent_validEventPassed_returnNewEventId() throws Exception {
         ArgumentCaptor<CreateEvent> argumentCaptor = ArgumentCaptor.forClass(CreateEvent.class);
 
-        Id newEvent = createEventUseCase.createEvent(stubResource.createEvent);
+        Id newEvent = createEventUseCase.createEvent(this.event);
 
         verify(eventRepository, times(1))
                 .createEvent(argumentCaptor.capture());
@@ -90,8 +93,10 @@ public class CreateEventUseCaseTest {
 
     @Test
     public void createEvent_invalidEventPassed_throwException() throws Exception {
+        CreateEvent event = CreateEventMother.invalidEvent().build();
+
         Method method = CreateEventUseCase.class.getMethod("createEvent", CreateEvent.class);
-        Object[] parameters = new Object[]{stubResource.invalidCreateEvent};
+        Object[] parameters = new Object[]{event};
 
         violations = validationResource.executableValidator.validateParameters(createEventUseCase, method, parameters);
 

@@ -39,15 +39,16 @@ public class LocationTest {
     @Test
     public void invalidLocationPassed_returnConstraintViolations() {
         // Test required fields
-        violations = validationResource.validator.validate(new Location());
+        Location location = LocationMother.allFieldNullLocation()
+                .build();
+
+        violations = validationResource.validator.validate(location);
         assertEquals(3, violations.size());
 
         // Test invalid location
-        Location location = new Location();
-        location.setVersion(-1);
-        location.setAddress(null);
-        location.setCity(null);
-        location.setCountry(null);
+        location = LocationMother.allFieldNullLocation()
+                .version(-1)
+                .build();
 
         violations = validationResource.validator.validate(location);
         assertEquals(4, violations.size());
@@ -55,11 +56,7 @@ public class LocationTest {
 
     @Test
     public void validLocationPassed_returnTrue() {
-        Location location = new Location();
-        location.setVersion(0);
-        location.setAddress("Some Street");
-        location.setCity("Some City");
-        location.setCountry("Some Country");
+        Location location = LocationMother.validLocation().build();
 
         violations = validationResource.validator.validate(location);
         assertTrue("Valid location should pass.", violations.isEmpty());

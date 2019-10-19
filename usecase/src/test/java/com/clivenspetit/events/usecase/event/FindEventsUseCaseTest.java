@@ -19,12 +19,11 @@ package com.clivenspetit.events.usecase.event;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.event.EventMother;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
-import com.clivenspetit.events.usecase.DataStubResource;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.*;
@@ -49,11 +48,9 @@ public class FindEventsUseCaseTest {
     private static final Sort sort = Sort.by(Sort.Direction.ASC, "name", "startDate");
     private static final Pageable pageable = PageRequest.of(0, 25, sort);
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private EventRepository eventRepository;
     private FindEventsUseCase findEventsUseCase;
+    private Event event;
 
     @Before
     public void setUp() throws Exception {
@@ -63,8 +60,10 @@ public class FindEventsUseCaseTest {
         eventRepository = mock(EventRepository.class);
         findEventsUseCase = new FindEventsUseCase(eventRepository);
 
+        event = EventMother.validEvent().build();
+
         when(eventRepository.getAllEvents(null, pageable))
-                .thenReturn(new PageImpl<>(Collections.singletonList(stubResource.event)));
+                .thenReturn(new PageImpl<>(Collections.singletonList(event)));
 
         when(eventRepository.getAllEvents(UNKNOWN_QUERY, pageable))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
@@ -74,6 +73,7 @@ public class FindEventsUseCaseTest {
     public void tearDown() throws Exception {
         eventRepository = null;
         findEventsUseCase = null;
+        event = null;
     }
 
     @Test
@@ -109,7 +109,7 @@ public class FindEventsUseCaseTest {
         List<Object> anyOfLocationOnlineUrl = Arrays.asList(foundEvent.getOnlineUrl(), foundEvent.getLocation());
 
         assertThat(argumentCaptor.getAllValues().get(0), is(nullValue()));
-        assertThat(foundEvent.getId(), is(stubResource.event.getId()));
+        assertThat(foundEvent.getId(), is(event.getId()));
         assertThat(foundEvent.getName(), is("Angular Connect"));
         assertThat(foundEvent.getSessions().size(), is(1));
         assertThat(foundEvent.getPrice(), is(1.00));

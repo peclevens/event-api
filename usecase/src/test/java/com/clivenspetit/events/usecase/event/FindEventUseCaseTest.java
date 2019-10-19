@@ -16,15 +16,18 @@
 
 package com.clivenspetit.events.usecase.event;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.event.EventMother;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
-import com.clivenspetit.events.usecase.DataStubResource;
-import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
@@ -48,9 +51,6 @@ public class FindEventUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private Set<ConstraintViolation<FindEventUseCase>> violations;
     private EventRepository eventRepository;
     private FindEventUseCase findEventUseCase;
@@ -61,7 +61,7 @@ public class FindEventUseCaseTest {
         findEventUseCase = new FindEventUseCase(eventRepository);
 
         when(eventRepository.getEventById(EVENT_ID))
-                .thenReturn(stubResource.event);
+                .thenReturn(EventMother.validEvent().build());
     }
 
     @After

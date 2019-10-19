@@ -17,7 +17,6 @@
 package com.clivenspetit.events.domain.session;
 
 import com.clivenspetit.events.domain.ValidationResource;
-import com.clivenspetit.events.domain.common.Level;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -25,9 +24,6 @@ import org.junit.Test;
 
 import javax.validation.ConstraintViolation;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -48,15 +44,15 @@ public class SessionTest {
         LocalDateTime startDate = LocalDateTime.of(2036, 9, 26,
                 10, 0, 0);
 
-        session = new Session();
-        session.setVersion(1);
-        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
-        session.setName("Using Angular 4 Pipes");
-        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
-        session.setLevel(Level.BEGINNER);
-        session.setPresenter("John Doe");
-        session.setDuration(LocalTime.of(1, 0));
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
+//        session = new Session();
+//        session.setVersion(1);
+//        session.setId("f50425ee-dca3-4ada-93cc-09993db07311");
+//        session.setName("Using Angular 4 Pipes");
+//        session.setDescription("Learn all about the new pipes in Angular 4, both how to write them.");
+//        session.setLevel(Level.BEGINNER);
+//        session.setPresenter("John Doe");
+//        session.setDuration(LocalTime.of(1, 0));
+//        session.setVoters(new LinkedHashSet<>(Arrays.asList("johnpapa", "bradgreen")));
     }
 
     @After
@@ -72,20 +68,24 @@ public class SessionTest {
 
     @Test
     public void validSessionPassed_returnTrue() {
+        Session session = SessionMother.validSession().build();
+
         violations = validationResource.validator.validate(session);
         assertTrue("Valid session should pass.", violations.isEmpty());
     }
 
     @Test
     public void invalidSessionPassed_returnFalse() {
-        session.setVersion(-1);
-        session.setId("f50425ee");
-        session.setName("A");
-        session.setDescription("Learn all about it.");
-        session.setLevel(null);
-        session.setPresenter("John/Doe");
-        session.setDuration(null);
-        session.setVoters(new LinkedHashSet<>(Arrays.asList("voter/1", "voter2")));
+//        session.setVersion(-1);
+//        session.setId("f50425ee");
+//        session.setName("A");
+//        session.setDescription("Learn all about it.");
+//        session.setLevel(null);
+//        session.setPresenter("John/Doe");
+//        session.setDuration(null);
+//        session.setVoters(new LinkedHashSet<>(Arrays.asList("voter/1", "voter2")));
+
+        Session session = SessionMother.invalidSession().build();
 
         violations = validationResource.validator.validate(session);
         assertEquals(8, violations.size());

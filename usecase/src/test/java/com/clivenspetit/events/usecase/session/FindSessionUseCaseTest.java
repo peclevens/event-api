@@ -16,13 +16,16 @@
 
 package com.clivenspetit.events.usecase.session;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.SessionMother;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import com.clivenspetit.events.usecase.DataStubResource;
-import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
@@ -44,9 +47,6 @@ public class FindSessionUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private Set<ConstraintViolation<FindSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private FindSessionUseCase findSessionUseCase;
@@ -57,7 +57,7 @@ public class FindSessionUseCaseTest {
         findSessionUseCase = new FindSessionUseCase(sessionRepository);
 
         when(sessionRepository.getSessionById(SESSION_ID))
-                .thenReturn(stubResource.session);
+                .thenReturn(SessionMother.validSession().build());
     }
 
     @After

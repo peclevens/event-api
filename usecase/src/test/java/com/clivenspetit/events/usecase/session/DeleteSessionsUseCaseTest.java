@@ -16,10 +16,10 @@
 
 package com.clivenspetit.events.usecase.session;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import com.clivenspetit.events.usecase.ValidationResource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -63,6 +63,7 @@ public class DeleteSessionsUseCaseTest {
     @After
     public void tearDown() throws Exception {
         sessionRepository = null;
+        eventRepository = null;
         deleteSessionsUseCase = null;
         violations = null;
     }

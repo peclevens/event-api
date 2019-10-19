@@ -17,11 +17,10 @@
 package com.clivenspetit.events.usecase.session;
 
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.SessionMother;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import com.clivenspetit.events.usecase.DataStubResource;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Sort;
@@ -45,9 +44,6 @@ public class FindSessionsUseCaseTest {
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
     private static final Sort sort = Sort.by(Sort.Direction.ASC, "level", "duration");
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private SessionRepository sessionRepository;
     private FindSessionsUseCase findSessionsUseCase;
     private List<Session> sessions;
@@ -57,7 +53,7 @@ public class FindSessionsUseCaseTest {
         sessionRepository = mock(SessionRepository.class);
         findSessionsUseCase = new FindSessionsUseCase(sessionRepository);
 
-        sessions = Collections.singletonList(stubResource.session);
+        sessions = Collections.singletonList(SessionMother.validSession().build());
 
         when(sessionRepository.getSessionsByEventId(EVENT_ID, null, sort))
                 .thenReturn(sessions);

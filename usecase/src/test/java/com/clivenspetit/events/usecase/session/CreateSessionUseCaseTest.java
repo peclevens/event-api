@@ -16,12 +16,15 @@
 
 package com.clivenspetit.events.usecase.session;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.session.CreateSession;
+import com.clivenspetit.events.domain.session.CreateSessionMother;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
-import com.clivenspetit.events.usecase.DataStubResource;
-import com.clivenspetit.events.usecase.ValidationResource;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
@@ -43,19 +46,19 @@ public class CreateSessionUseCaseTest {
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
 
-    @Rule
-    public DataStubResource stubResource = new DataStubResource();
-
     private Set<ConstraintViolation<CreateSessionUseCase>> violations;
     private SessionRepository sessionRepository;
     private CreateSessionUseCase createSessionUseCase;
+    private CreateSession session;
 
     @Before
     public void setUp() throws Exception {
         sessionRepository = mock(SessionRepository.class);
         createSessionUseCase = new CreateSessionUseCase(sessionRepository);
 
-        when(sessionRepository.createSession(stubResource.createSession))
+        session = CreateSessionMother.validSession().build();
+
+        when(sessionRepository.createSession(session))
                 .thenReturn(NEW_SESSION_ID);
     }
 
@@ -64,6 +67,7 @@ public class CreateSessionUseCaseTest {
         sessionRepository = null;
         createSessionUseCase = null;
         violations = null;
+        session = null;
     }
 
     @Test
@@ -81,7 +85,7 @@ public class CreateSessionUseCaseTest {
     public void createSession_validSessionPassed_returnNewSessionId() throws Exception {
         ArgumentCaptor<CreateSession> argumentCaptor = ArgumentCaptor.forClass(CreateSession.class);
 
-        Id newSession = createSessionUseCase.createSession(stubResource.createSession);
+        Id newSession = createSessionUseCase.createSession(session);
 
         verify(sessionRepository, times(1))
                 .createSession(argumentCaptor.capture());
@@ -91,8 +95,10 @@ public class CreateSessionUseCaseTest {
 
     @Test
     public void createSession_invalidSessionPassed_throwException() throws Exception {
+        CreateSession session = CreateSessionMother.invalidSession().build();
+
         Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
-        Object[] parameters = new Object[]{stubResource.invalidCreateSession};
+        Object[] parameters = new Object[]{session};
 
         violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
                 method, parameters);

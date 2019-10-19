@@ -16,9 +16,9 @@
 
 package com.clivenspetit.events.usecase.event;
 
+import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
-import com.clivenspetit.events.usecase.ValidationResource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
