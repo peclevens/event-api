@@ -95,7 +95,7 @@ public final class Session implements Serializable {
     @Valid
     @IterableOfStringPattern(regexp = "^[a-z0-9_.-]+$",
             message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
-    private Set<String> voters = new LinkedHashSet<>();
+    private Set<String> voters;
 
     private Session(Session.Builder builder) {
         this.version = builder.version;
@@ -105,7 +105,7 @@ public final class Session implements Serializable {
         this.level = builder.level;
         this.duration = builder.duration;
         this.presenter = builder.presenter;
-        this.voters = builder.voters;
+        this.voters = builder.voters != null ? builder.voters : new LinkedHashSet<>();
     }
 
     public Integer getVersion() {

@@ -72,7 +72,7 @@ public final class Event implements Serializable {
      */
     @PositiveOrZero(message = "Price should be greater or equal to zero.")
     @DecimalMax(value = "999.99", message = "Price should be less than equals to {value}.")
-    private Double price = 0.0D;
+    private Double price;
 
     /**
      * Event URL picture
@@ -104,7 +104,7 @@ public final class Event implements Serializable {
         this.id = builder.id;
         this.name = builder.name;
         this.startDate = builder.startDate;
-        this.price = builder.price;
+        this.price = builder.price != null ? builder.price : 0.0D;
         this.imageUrl = builder.imageUrl;
         this.onlineUrl = builder.onlineUrl;
         this.location = builder.location;
