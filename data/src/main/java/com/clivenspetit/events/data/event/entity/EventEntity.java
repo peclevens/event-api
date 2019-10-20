@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @author Clivens Petit
  */
 @Entity
-@Table(name = "events")
+@Table(name = "event")
 public class EventEntity {
 
     @Id

@@ -18,10 +18,19 @@ package com.clivenspetit.events.data;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.annotation.PostConstruct;
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * @author Clivens Petit
  */
 @SpringBootApplication
 public class ApplicationTests {
 
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.US);
+    }
 }

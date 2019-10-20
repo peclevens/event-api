@@ -1,3 +1,33 @@
+# Spring
+spring:
+  profiles:
+    active: ${ENVIRONMENT}
+
+  #Database and JPA settings
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate # Hibernate ddl auto (create, create-drop, update, validate)
+    show-sql: false
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          time_zone: UTC
+          lob:
+            non_contextual_creation: true
+
+  flyway:
+    enabled: true
+
+# Logging
 logging:
   level:
     root: warn

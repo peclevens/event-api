@@ -1,0 +1,6 @@
+# Logging
+logging:
+  level:
+    root: warn
+    com:
+      clivenspetit: trace
