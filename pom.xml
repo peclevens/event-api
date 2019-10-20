@@ -280,7 +280,7 @@
                     <executions>
                         <execution>
                             <id>add-test-source</id>
-                            <phase>process-resources</phase>
+                            <phase>generate-test-sources</phase>
                             <goals>
                                 <goal>add-test-source</goal>
                             </goals>
@@ -288,6 +288,20 @@
                                 <sources>
                                     <source>src/it/java</source>
                                 </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-test-resource</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>add-test-resource</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <resource>
+                                        <directory>src/it/resources</directory>
+                                    </resource>
+                                </resources>
                             </configuration>
                         </execution>
                     </executions>
