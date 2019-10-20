@@ -18,6 +18,8 @@ spring:
     generate-ddl: false
     properties:
       hibernate:
+        show_sql: false
+        format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:
           time_zone: UTC
