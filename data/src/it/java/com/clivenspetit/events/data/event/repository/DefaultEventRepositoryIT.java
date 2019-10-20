@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
  */
 @DataJpaTest
 @RunWith(SpringRunner.class)
-public class DefaultEventRepositoryTest {
+public class DefaultEventRepositoryIT {
 
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
 
