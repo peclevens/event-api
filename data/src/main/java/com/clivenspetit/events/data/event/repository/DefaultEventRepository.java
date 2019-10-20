@@ -78,7 +78,7 @@ public class DefaultEventRepository implements EventRepository {
 
                     // Cache event if found
                     if (event != null) {
-                        logger.info("Event found in db. Id: {}", id);
+                        logger.info("Event found in db, cache it. Id: {}", id);
                         eventCache.put(cacheKey, event);
                     }
 

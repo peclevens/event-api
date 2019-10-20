@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.cache.Cache;
@@ -86,6 +88,11 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
     public void getEventById() {
         String cacheKey = String.format(EVENT_CACHE_KEY_TPL, EVENT_ID);
 
