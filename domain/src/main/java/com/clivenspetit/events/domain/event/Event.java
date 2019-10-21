@@ -25,6 +25,7 @@ import com.clivenspetit.events.domain.validation.constraints.Url;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -72,7 +73,7 @@ public final class Event implements Serializable {
      */
     @PositiveOrZero(message = "Price should be greater or equal to zero.")
     @DecimalMax(value = "999.99", message = "Price should be less than equals to {value}.")
-    private Double price;
+    private BigDecimal price;
 
     /**
      * Event URL picture
@@ -104,7 +105,7 @@ public final class Event implements Serializable {
         this.id = builder.id;
         this.name = builder.name;
         this.startDate = builder.startDate;
-        this.price = builder.price != null ? builder.price : 0.0D;
+        this.price = builder.price != null ? builder.price : BigDecimal.ZERO;
         this.imageUrl = builder.imageUrl;
         this.onlineUrl = builder.onlineUrl;
         this.location = builder.location;
@@ -131,7 +132,7 @@ public final class Event implements Serializable {
         return startDate;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -156,7 +157,7 @@ public final class Event implements Serializable {
         private String id;
         private String name;
         private LocalDateTime startDate;
-        private Double price = 0.0D;
+        private BigDecimal price = BigDecimal.ZERO;
         private String imageUrl;
         private String onlineUrl;
         private Location location;
@@ -186,7 +187,7 @@ public final class Event implements Serializable {
             return this;
         }
 
-        public Builder price(Double price) {
+        public Builder price(BigDecimal price) {
             this.price = price;
             return this;
         }

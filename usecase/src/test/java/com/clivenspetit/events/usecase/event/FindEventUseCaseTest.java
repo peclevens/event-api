@@ -32,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -111,7 +112,7 @@ public class FindEventUseCaseTest {
         assertThat(event.getId(), is(EVENT_ID));
         assertThat(event.getName(), is("Angular Connect"));
         assertThat(event.getSessions().size(), is(1));
-        assertThat(event.getPrice(), is(1.00));
+        assertThat(event.getPrice(), equalTo(BigDecimal.valueOf(1.00)));
         assertThat(anyOfLocationOnlineUrl, anyOf(hasItem(notNullValue())));
 
         // Assert event location

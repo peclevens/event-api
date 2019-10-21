@@ -19,6 +19,7 @@ package com.clivenspetit.events.domain.event;
 import com.clivenspetit.events.domain.common.LocationMother;
 import com.clivenspetit.events.domain.session.SessionMother;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -35,7 +36,7 @@ public class EventMother {
                 .imageUrl("http://localhost/images/angularconnect-shield.png")
                 .onlineUrl("https://hangouts.google.com")
                 .location(LocationMother.validLocation().build())
-                .price(1.00)
+                .price(BigDecimal.valueOf(1.00))
                 .startDate(LocalDateTime.of(2036, 9, 26, 10, 0, 0))
                 .sessions(Collections.singleton(SessionMother.validSession().build()));
     }
@@ -48,7 +49,7 @@ public class EventMother {
                 .imageUrl("localhost/images/angularconnect-shield.png")
                 .onlineUrl("hangouts.google.com")
                 .location(LocationMother.allFieldNullLocation().build())
-                .price(1.00)
+                .price(BigDecimal.valueOf(1.00))
                 .startDate(LocalDateTime.of(2018, 9, 26, 10, 0, 0))
                 .sessions(Collections.singleton(SessionMother.invalidSession().build()));
     }

@@ -30,9 +30,11 @@ import org.mockito.ArgumentCaptor;
 
 import javax.validation.ConstraintViolation;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
@@ -62,7 +64,7 @@ public class UpdateEventUseCaseTest {
 
         modifiedEvent = EventMother.validEvent()
                 .name("Using Angular Pipes")
-                .price(0.00)
+                .price(BigDecimal.ZERO)
                 .location(Location.builder()
                         .country("France")
                         .city("Paris")
@@ -118,7 +120,7 @@ public class UpdateEventUseCaseTest {
 
         Event event = EventMother.validEvent()
                 .name("A")
-                .price(-2.00)
+                .price(BigDecimal.valueOf(-2.00))
                 .onlineUrl(null)
                 .location(null)
                 .startDate(startDate)
@@ -149,7 +151,7 @@ public class UpdateEventUseCaseTest {
         assertThat(argumentCaptor.getAllValues().get(1), is(EVENT_ID));
         assertThat(eventArgumentCaptor.getAllValues().get(0).getName(), is(modifiedEvent.getName()));
         assertThat(updatedEvent.getName(), is("Using Angular Pipes"));
-        assertThat(updatedEvent.getPrice(), is(0.00));
+        assertThat(updatedEvent.getPrice(), equalTo(BigDecimal.ZERO));
         assertThat(updatedEvent.getLocation().getCountry(), is("France"));
         assertThat(updatedEvent.getLocation().getCity(), is("Paris"));
         assertThat(updatedEvent.getLocation().getAddress(), is("72 Rue Nationale"));

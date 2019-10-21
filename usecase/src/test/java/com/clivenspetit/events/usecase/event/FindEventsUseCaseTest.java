@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +113,7 @@ public class FindEventsUseCaseTest {
         assertThat(foundEvent.getId(), is(event.getId()));
         assertThat(foundEvent.getName(), is("Angular Connect"));
         assertThat(foundEvent.getSessions().size(), is(1));
-        assertThat(foundEvent.getPrice(), is(1.00));
+        assertThat(foundEvent.getPrice(), equalTo(BigDecimal.valueOf(1.00)));
         assertThat(anyOfLocationOnlineUrl, anyOf(hasItem(notNullValue())));
 
         // Assert event location
