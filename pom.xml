@@ -53,6 +53,9 @@
         <mockito.version>3.0.0</mockito.version>
         <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
         <javax.el.version>3.0.0</javax.el.version>
+        <skipTests>false</skipTests>
+        <skipUnitTests>${skipTests}</skipUnitTests>
+        <skipIntegrationTests>${skipTests}</skipIntegrationTests>
     </properties>
 
     <dependencyManagement>
@@ -257,6 +260,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
+                        <skipTests>${skipUnitTests}</skipTests>
                         <argLine>@{argLine} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
                             --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED
                             --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens
@@ -280,6 +284,8 @@
                         </execution>
                     </executions>
                     <configuration>
+                        <skipTests>${skipTests}</skipTests>
+                        <skipITs>${skipIntegrationTests}</skipITs>
                         <argLine>@{argLine} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
                             --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED
                             --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens
