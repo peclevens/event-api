@@ -58,7 +58,7 @@ public class DefaultEventRepository implements EventRepository {
      * @return The event matching the id passed.
      */
     @Override
-    public Event getEventById(@UUID String id) {
+    public Event getEventById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
         logger.info("Search event with id: {}", id);
 
         // Cache key

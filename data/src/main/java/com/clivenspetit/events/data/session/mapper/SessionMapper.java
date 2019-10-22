@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.clivenspetit.events.data.event.mapper;
+package com.clivenspetit.events.data.session.mapper;
 
-import com.clivenspetit.events.data.event.entity.EventEntity;
-import com.clivenspetit.events.data.session.mapper.SessionMapper;
-import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.data.session.entity.SessionEntity;
+import com.clivenspetit.events.domain.session.Session;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -26,11 +25,11 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Clivens Petit
  */
-@Mapper(uses = {SessionMapper.class})
-public interface EventMapper {
+@Mapper
+public interface SessionMapper {
 
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
+    SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
-    @Mapping(source = "eventId", target = "id")
-    Event from(EventEntity event);
+    @Mapping(source = "sessionId", target = "id")
+    Session from(SessionEntity session);
 }

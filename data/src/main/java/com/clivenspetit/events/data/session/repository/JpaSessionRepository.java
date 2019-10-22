@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package com.clivenspetit.events.data.event.mapper;
+package com.clivenspetit.events.data.session.repository;
 
-import com.clivenspetit.events.data.event.entity.EventEntity;
-import com.clivenspetit.events.data.session.mapper.SessionMapper;
-import com.clivenspetit.events.domain.event.Event;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.clivenspetit.events.data.session.entity.SessionEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * @author Clivens Petit
  */
-@Mapper(uses = {SessionMapper.class})
-public interface EventMapper {
+@Repository
+public interface JpaSessionRepository extends JpaRepository<SessionEntity, Long> {
 
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
-
-    @Mapping(source = "eventId", target = "id")
-    Event from(EventEntity event);
+    Optional<SessionEntity> findBySessionId(String id);
 }
