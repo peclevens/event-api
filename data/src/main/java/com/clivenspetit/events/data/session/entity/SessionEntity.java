@@ -44,8 +44,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "session")
-//@TypeDefs({@TypeDef(name = "json", typeClass = JsonStringType.class),
-//        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
+@TypeDefs({@TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 public class SessionEntity implements Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -120,12 +120,12 @@ public class SessionEntity implements Serializable {
     /**
      * List of voters.
      */
-//    @Valid
-//    @IterableOfStringPattern(regexp = "^[a-z0-9_.-]+$",
-//            message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
-//    @Type(type = "json")
-//    @Column(name = "voters", columnDefinition = "json")
-//    private Set<String> voters;
+    @Valid
+    @IterableOfStringPattern(regexp = "^[a-z0-9_.-]+$",
+            message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
+    @Type(type = "json")
+    @Column(name = "voters", columnDefinition = "json")
+    private Set<String> voters;
 
     /**
      * Session created datetime
@@ -223,13 +223,13 @@ public class SessionEntity implements Serializable {
         this.presenter = presenter;
     }
 
-//    public Set<String> getVoters() {
-//        return voters;
-//    }
-//
-//    public void setVoters(Set<String> voters) {
-//        this.voters = voters;
-//    }
+    public Set<String> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(Set<String> voters) {
+        this.voters = voters;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
