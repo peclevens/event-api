@@ -18,7 +18,7 @@ package com.clivenspetit.events.domain.user;
 
 import com.clivenspetit.events.domain.validation.constraints.Name;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -36,7 +36,6 @@ public class UpdateUser implements Serializable {
      */
     @Name(message = "First name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 60, message = "First name should be between {min} and {max} characters.")
-    @NotBlank(message = "First name is required.")
     private String firstName;
 
     /**
@@ -44,8 +43,13 @@ public class UpdateUser implements Serializable {
      */
     @Name(message = "Last name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 60, message = "Last name should be between {min} and {max} characters.")
-    @NotBlank(message = "Last name is required.")
     private String lastName;
+
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9!#$%&()*+,.;<=>?@^_~]{8,80}$",
+            message = "Password should be between 8 to 80 characters. Only letters, numbers and optionally special " +
+                    "characters (!#$%&()*+,.;<=>?@^_~) are allowed.")
+    @Size(max = 80, message = "Password should be {max} characters long.")
+    private String password;
 
     private UpdateUser(UpdateUser.Builder builder) {
         this.firstName = builder.firstName;
@@ -64,9 +68,14 @@ public class UpdateUser implements Serializable {
         return lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public static final class Builder {
         private String firstName;
         private String lastName;
+        private String password;
 
         private Builder() {
 
@@ -82,10 +91,16 @@ public class UpdateUser implements Serializable {
             return this;
         }
 
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
         public UpdateUser build() {
             UpdateUser user = new UpdateUser(this);
             user.lastName = this.lastName;
             user.firstName = this.firstName;
+            user.password = this.password;
             return user;
         }
     }

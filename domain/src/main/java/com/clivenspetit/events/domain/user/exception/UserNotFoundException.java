@@ -22,7 +22,7 @@ package com.clivenspetit.events.domain.user.exception;
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException() {
-        this("Invalid credentials.");
+        this("User not found.");
     }
 
     public UserNotFoundException(String message) {

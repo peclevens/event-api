@@ -100,6 +100,17 @@ public class DefaultUserRepository implements UserRepository {
     }
 
     /**
+     * Find out whether a user exists or not by id.
+     *
+     * @param id The user id.
+     * @return Return true if exists, false otherwise.
+     */
+    @Override
+    public Boolean userExists(@UUID(message = "User id should be a valid v4 UUID.") String id) {
+        return null;
+    }
+
+    /**
      * Update existing user.
      *
      * @param id   The user id.

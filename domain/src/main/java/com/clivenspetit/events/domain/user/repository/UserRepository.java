@@ -48,6 +48,14 @@ public interface UserRepository {
     User getUserEmail(@Email String email);
 
     /**
+     * Find out whether a user exists or not by id.
+     *
+     * @param id The user id.
+     * @return Return true if exists, false otherwise.
+     */
+    Boolean userExists(@UUID(message = "User id should be a valid v4 UUID.") String id);
+
+    /**
      * Update existing user.
      *
      * @param id   The user id.
