@@ -36,6 +36,11 @@ public class Login implements Serializable {
     @Password
     private String password;
 
+    public Login(@Email String email, @Password String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     private Login(Login.Builder builder) {
         this.email = builder.email;
         this.password = builder.password;

@@ -16,6 +16,7 @@
 
 package com.clivenspetit.events.usecase.user.login;
 
+import com.clivenspetit.events.domain.security.crypto.password.PasswordEncoder;
 import com.clivenspetit.events.domain.user.User;
 import com.clivenspetit.events.domain.user.login.Login;
 import com.clivenspetit.events.domain.user.login.exception.InvalidCredentialsException;
@@ -30,19 +31,21 @@ import javax.validation.constraints.NotNull;
 public class LoginUseCase {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public LoginUseCase(UserRepository userRepository) {
+    public LoginUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public User login(@NotNull @Valid Login login) {
+    public User login(@NotNull @Valid final Login login) {
         final User user = userRepository.getUserEmail(login.getEmail());
 
         // Validate the user exists
         if (user == null) throw new InvalidCredentialsException();
 
         // Validate password matches
-
+        if (!passwordEncoder.matches(login.getPassword(), user.getPassword())) throw new InvalidCredentialsException();
 
         return user;
     }
