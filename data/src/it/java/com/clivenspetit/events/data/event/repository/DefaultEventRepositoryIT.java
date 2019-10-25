@@ -16,10 +16,11 @@
 
 package com.clivenspetit.events.data.event.repository;
 
-import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
+import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
+import com.clivenspetit.events.domain.session.Session;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,10 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
+import java.util.UUID;
 
 import static com.clivenspetit.events.data.event.repository.DefaultEventRepository.EVENT_CACHE_KEY_TPL;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -75,16 +76,12 @@ public class DefaultEventRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        EventEntity eventEntity = new EventEntity();
-        eventEntity.setEventId(EVENT_ID);
-        eventEntity.setName("Angular Connect");
-
         eventRepository = new DefaultEventRepository(jpaEventRepository, eventCache, EventMapper.INSTANCE);
     }
 
     @After
     public void tearDown() throws Exception {
-
+        eventRepository = null;
     }
 
     @Test
@@ -93,17 +90,40 @@ public class DefaultEventRepositoryIT {
             @Sql("classpath:db/sample/create-location.sql"),
             @Sql("classpath:db/sample/create-session.sql")
     })
-    public void getEventById() {
+    public void getEventById_validIdPassed_returnEvent() {
         String cacheKey = String.format(EVENT_CACHE_KEY_TPL, EVENT_ID);
 
+        // Find event in database
         Event event = eventRepository.getEventById(EVENT_ID);
 
         assertThat(event, is(notNullValue()));
-        assertThat(EVENT_ID, is(event.getId()));
         assertTrue("Event should be in the cache.", eventCache.containsKey(cacheKey));
+
+        // Event should be found in cache
+        event = eventRepository.getEventById(EVENT_ID);
+
+        Session session = event.getSessions().iterator().next();
+
+        assertThat(event, is(notNullValue()));
+        assertThat(session, is(notNullValue()));
+        assertThat(EVENT_ID, is(event.getId()));
+        assertThat(event.getLocation().getCountry(), is("United States"));
+        assertThat(event.getLocation().getCity(), is("New York"));
+        assertThat(session.getName(), is("Using Angular 4 Pipes"));
+        assertThat(session.getLevel(), is(Level.BEGINNER));
+        assertThat(session.getPresenter(), is("John Doe"));
+        assertThat(session.getVoters(), hasItems("johnpapa", "bradgreen"));
     }
 
     @Test
+    public void getEventById_unknownIdPassed_returnNull() {
+        Event event = eventRepository.getEventById(UUID.randomUUID().toString());
+
+        assertThat(event, is(nullValue()));
+    }
+
+    @Test
+    @Sql("classpath:db/sample/create-event.sql")
     public void eventExists() {
 
     }
