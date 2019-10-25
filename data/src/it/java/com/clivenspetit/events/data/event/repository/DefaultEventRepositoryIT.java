@@ -78,12 +78,12 @@ public class DefaultEventRepositoryIT {
     @Before
     public void setUp() throws Exception {
         eventRepository = new DefaultEventRepository(jpaEventRepository, eventCache, EventMapper.INSTANCE);
-        eventCache.clear();
     }
 
     @After
     public void tearDown() throws Exception {
         eventRepository = null;
+        eventCache.clear();
     }
 
     @Test
