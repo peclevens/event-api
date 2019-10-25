@@ -40,6 +40,7 @@ import java.util.UUID;
 import static com.clivenspetit.events.data.event.repository.DefaultEventRepository.EVENT_CACHE_KEY_TPL;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -77,6 +78,7 @@ public class DefaultEventRepositoryIT {
     @Before
     public void setUp() throws Exception {
         eventRepository = new DefaultEventRepository(jpaEventRepository, eventCache, EventMapper.INSTANCE);
+        eventCache.clear();
     }
 
     @After
@@ -124,8 +126,19 @@ public class DefaultEventRepositoryIT {
 
     @Test
     @Sql("classpath:db/sample/create-event.sql")
-    public void eventExists() {
+    public void eventExists_validIdPassed_returnTrue() {
+        Boolean exists = eventRepository.eventExists(EVENT_ID);
 
+        assertThat(exists, is(notNullValue()));
+        assertTrue("Event should exist", exists);
+    }
+
+    @Test
+    public void eventExists_invalidIdPassed_returnFalse() {
+        Boolean exists = eventRepository.eventExists(EVENT_ID);
+
+        assertThat(exists, is(notNullValue()));
+        assertFalse("Event should not exist", exists);
     }
 
     @Test

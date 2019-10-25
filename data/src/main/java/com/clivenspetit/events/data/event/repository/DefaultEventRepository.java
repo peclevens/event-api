@@ -97,8 +97,8 @@ public class DefaultEventRepository implements EventRepository {
      * @return Return true if exists, false otherwise.
      */
     @Override
-    public Boolean eventExists(@UUID String id) {
-        return null;
+    public Boolean eventExists(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+        return this.getEventById(id) != null;
     }
 
     /**
