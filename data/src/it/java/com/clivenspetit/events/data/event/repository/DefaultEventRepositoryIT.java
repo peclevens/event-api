@@ -18,6 +18,8 @@ package com.clivenspetit.events.data.event.repository;
 
 import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.domain.common.Level;
+import com.clivenspetit.events.domain.event.CreateEvent;
+import com.clivenspetit.events.domain.event.CreateEventMother;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
@@ -35,6 +37,7 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
+import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
 import static com.clivenspetit.events.data.event.repository.DefaultEventRepository.EVENT_CACHE_KEY_TPL;
@@ -104,9 +107,10 @@ public class DefaultEventRepositoryIT {
         // Event should be found in cache
         event = eventRepository.getEventById(EVENT_ID);
 
+        assertThat(event, is(notNullValue()));
+
         Session session = event.getSessions().iterator().next();
 
-        assertThat(event, is(notNullValue()));
         assertThat(session, is(notNullValue()));
         assertThat(EVENT_ID, is(event.getId()));
         assertThat(event.getLocation().getCountry(), is("United States"));
@@ -147,8 +151,92 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
-    public void createEvent() {
+    public void createEvent_eventWithSessionWithLocationAndOnlineUrl_returnNewEventId() {
+        CreateEvent createEvent = CreateEventMother.validEvent()
+                .build();
 
+        // Create the event
+        String id = eventRepository.createEvent(createEvent);
+
+        assertThat(id, is(notNullValue()));
+        assertThat(id, instanceOf(String.class));
+
+        // Find the event
+        Event event = eventRepository.getEventById(id);
+
+        assertThat(event, is(notNullValue()));
+
+        Session session = event.getSessions().iterator().next();
+
+        assertThat(session, is(notNullValue()));
+        assertThat(event.getLocation().getCountry(), is("United States"));
+        assertThat(event.getLocation().getCity(), is("New York"));
+        assertThat(session.getName(), is("Using Angular 4 Pipes"));
+        assertThat(session.getLevel(), is(Level.BEGINNER));
+        assertThat(session.getPresenter(), is("John Doe"));
+    }
+
+    @Test
+    public void createEvent_eventWithLocation_returnNewEventId() {
+        CreateEvent createEvent = CreateEventMother.validEvent()
+                .onlineUrl(null)
+                .build();
+
+        // Create the event
+        String id = eventRepository.createEvent(createEvent);
+
+        assertThat(id, is(notNullValue()));
+        assertThat(id, instanceOf(String.class));
+
+        // Find the event
+        Event event = eventRepository.getEventById(id);
+
+        assertThat(event, is(notNullValue()));
+
+        Session session = event.getSessions().iterator().next();
+
+        assertThat(session, is(notNullValue()));
+        assertThat(event.getLocation().getCountry(), is("United States"));
+        assertThat(event.getLocation().getCity(), is("New York"));
+        assertThat(session.getName(), is("Using Angular 4 Pipes"));
+        assertThat(session.getLevel(), is(Level.BEGINNER));
+        assertThat(session.getPresenter(), is("John Doe"));
+    }
+
+    @Test
+    public void createEvent_eventWithOnlineUrl_returnNewEventId() {
+        CreateEvent createEvent = CreateEventMother.validEvent()
+                .location(null)
+                .build();
+
+        // Create the event
+        String id = eventRepository.createEvent(createEvent);
+
+        assertThat(id, is(notNullValue()));
+        assertThat(id, instanceOf(String.class));
+
+        // Find the event
+        Event event = eventRepository.getEventById(id);
+
+        assertThat(event, is(notNullValue()));
+
+        Session session = event.getSessions().iterator().next();
+
+        assertThat(session, is(notNullValue()));
+        assertThat(session.getName(), is("Using Angular 4 Pipes"));
+        assertThat(session.getLevel(), is(Level.BEGINNER));
+        assertThat(session.getPresenter(), is("John Doe"));
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void createEvent_eventWithNoLocation_throwException() {
+        CreateEvent createEvent = CreateEventMother.validEvent()
+                .location(null)
+                .onlineUrl(null)
+                .build();
+
+        // Create the event
+        eventRepository.createEvent(createEvent);
     }
 
     @Test
