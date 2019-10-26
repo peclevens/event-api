@@ -17,7 +17,6 @@
 package com.clivenspetit.events.data.session.repository;
 
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
@@ -122,7 +121,7 @@ public class DefaultSessionRepository implements SessionRepository {
      * @return The newly created session id.
      */
     @Override
-    public Id createSession(@NotNull @Valid CreateSession session) {
+    public String createSession(@NotNull @Valid CreateSession session) {
         return null;
     }
 

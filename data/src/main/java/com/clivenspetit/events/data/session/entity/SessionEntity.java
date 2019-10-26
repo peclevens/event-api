@@ -266,6 +266,7 @@ public class SessionEntity implements Serializable {
     @PrePersist
     public void prePersist() {
         sessionId = java.util.UUID.randomUUID().toString();
+        createdAt = LocalDateTime.now();
     }
 
     @PreUpdate

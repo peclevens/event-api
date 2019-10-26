@@ -18,14 +18,12 @@ package com.clivenspetit.events.data.session.repository;
 
 import com.clivenspetit.events.data.session.entity.SessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 /**
  * @author Clivens Petit
  */
-@Repository
 public interface JpaSessionRepository extends JpaRepository<SessionEntity, Long> {
 
     Optional<SessionEntity> findBySessionId(String id);

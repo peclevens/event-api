@@ -18,6 +18,7 @@ package com.clivenspetit.events.data.event.mapper;
 
 import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
+import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,4 +34,6 @@ public interface EventMapper {
 
     @Mapping(source = "eventId", target = "id")
     Event from(EventEntity event);
+
+    EventEntity from(CreateEvent event);
 }

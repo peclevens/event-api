@@ -16,7 +16,6 @@
 
 package com.clivenspetit.events.domain.session.repository;
 
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -65,7 +64,7 @@ public interface SessionRepository {
      * @param session Session creation object to store to a datasource.
      * @return The newly created session id.
      */
-    Id createSession(@NotNull @Valid CreateSession session);
+    String createSession(@NotNull @Valid CreateSession session);
 
     /**
      * Update existing session.

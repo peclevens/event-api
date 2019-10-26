@@ -16,8 +16,8 @@
 
 package com.clivenspetit.events.data.event.repository;
 
+import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
@@ -120,8 +120,19 @@ public class DefaultEventRepository implements EventRepository {
      * @return The newly created event id.
      */
     @Override
-    public Id createEvent(@NotNull @Valid CreateEvent event) {
-        return null;
+    public String createEvent(@NotNull @Valid CreateEvent event) {
+        logger.info("Create event with title: `{}`", event.getName());
+
+        // Map object to entity
+        EventEntity eventEntity = eventMapper.from(event);
+
+        // Save the event
+        eventEntity = jpaEventRepository.save(eventEntity);
+
+        logger.info("Event with title: `{}` was created successfully with id: {}",
+                event.getName(), eventEntity.getEventId());
+
+        return eventEntity.getEventId();
     }
 
     /**

@@ -16,7 +16,6 @@
 
 package com.clivenspetit.events.domain.event.repository;
 
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -64,7 +63,7 @@ public interface EventRepository {
      * @param event Event creation object to store to a datasource.
      * @return The newly created event id.
      */
-    Id createEvent(@NotNull @Valid CreateEvent event);
+    String createEvent(@NotNull @Valid CreateEvent event);
 
     /**
      * Update existing event.

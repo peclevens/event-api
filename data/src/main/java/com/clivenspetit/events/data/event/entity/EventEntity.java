@@ -18,6 +18,7 @@ package com.clivenspetit.events.data.event.entity;
 
 import com.clivenspetit.events.data.common.entity.LocationEntity;
 import com.clivenspetit.events.data.session.entity.SessionEntity;
+import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Url;
 import org.hibernate.annotations.Cascade;
@@ -33,6 +34,7 @@ import java.util.Set;
 /**
  * @author Clivens Petit
  */
+@AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
 @Entity
 @Table(name = "event")
 public class EventEntity implements Serializable {
@@ -105,7 +107,7 @@ public class EventEntity implements Serializable {
      * Location
      */
     @Valid
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "eventId", cascade = CascadeType.ALL, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "eventId", cascade = CascadeType.ALL)
     private LocationEntity location;
 
     /**
@@ -114,7 +116,7 @@ public class EventEntity implements Serializable {
     @Valid
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "eventId")
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    @Column(name = "event_id", nullable = false)
+    @Column(name = "event_id")
     private Set<SessionEntity> sessions;
 
     /**
@@ -210,6 +212,8 @@ public class EventEntity implements Serializable {
     }
 
     public void setLocation(LocationEntity location) {
+        if (location != null) location.setEventId(this);
+
         this.location = location;
     }
 
@@ -218,6 +222,10 @@ public class EventEntity implements Serializable {
     }
 
     public void setSessions(Set<SessionEntity> sessions) {
+        if (sessions != null && !sessions.isEmpty()) {
+            sessions.forEach(session -> session.setEventId(this));
+        }
+
         this.sessions = sessions;
     }
 
@@ -256,6 +264,7 @@ public class EventEntity implements Serializable {
     @PrePersist
     public void prePersist() {
         eventId = java.util.UUID.randomUUID().toString();
+        createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
