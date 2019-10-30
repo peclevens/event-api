@@ -17,7 +17,6 @@
 package com.clivenspetit.events.usecase.session;
 
 import com.clivenspetit.events.domain.ValidationResource;
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.CreateSessionMother;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
@@ -41,7 +40,7 @@ import static org.mockito.Mockito.*;
  */
 public class CreateSessionUseCaseTest {
 
-    private static final Id NEW_SESSION_ID = new Id("f50425ee-dca3-4ada-93cc-09993db07311");
+    private static final String NEW_SESSION_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
 
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
@@ -85,12 +84,12 @@ public class CreateSessionUseCaseTest {
     public void createSession_validSessionPassed_returnNewSessionId() throws Exception {
         ArgumentCaptor<CreateSession> argumentCaptor = ArgumentCaptor.forClass(CreateSession.class);
 
-        Id newSession = createSessionUseCase.createSession(session);
+        String id = createSessionUseCase.createSession(session);
 
         verify(sessionRepository, times(1))
                 .createSession(argumentCaptor.capture());
 
-        assertThat(newSession.getId(), is(NEW_SESSION_ID.getId()));
+        assertThat(id, is(NEW_SESSION_ID));
     }
 
     @Test

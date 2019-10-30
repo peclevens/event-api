@@ -17,7 +17,6 @@
 package com.clivenspetit.events.usecase.event;
 
 import com.clivenspetit.events.domain.ValidationResource;
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.CreateEventMother;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
@@ -41,7 +40,7 @@ import static org.mockito.Mockito.*;
  */
 public class CreateEventUseCaseTest {
 
-    private static final Id NEW_EVENT_ID = new Id("0f366033-57c2-407a-8bf8-f057bd3487fd");
+    private static final String NEW_EVENT_ID = "0f366033-57c2-407a-8bf8-f057bd3487fd";
 
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
@@ -83,12 +82,12 @@ public class CreateEventUseCaseTest {
     public void createEvent_validEventPassed_returnNewEventId() throws Exception {
         ArgumentCaptor<CreateEvent> argumentCaptor = ArgumentCaptor.forClass(CreateEvent.class);
 
-        Id newEvent = createEventUseCase.createEvent(this.event);
+        String id = createEventUseCase.createEvent(this.event);
 
         verify(eventRepository, times(1))
                 .createEvent(argumentCaptor.capture());
 
-        assertThat(newEvent.getId(), is(NEW_EVENT_ID.getId()));
+        assertThat(id, is(NEW_EVENT_ID));
     }
 
     @Test

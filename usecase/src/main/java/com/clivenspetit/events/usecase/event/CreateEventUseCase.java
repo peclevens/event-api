@@ -16,7 +16,6 @@
 
 package com.clivenspetit.events.usecase.event;
 
-import com.clivenspetit.events.domain.common.Id;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 
@@ -34,7 +33,7 @@ public class CreateEventUseCase {
         this.eventRepository = eventRepository;
     }
 
-    public Id createEvent(@NotNull @Valid CreateEvent event) {
+    public String createEvent(@NotNull @Valid CreateEvent event) {
         return eventRepository.createEvent(event);
     }
 }
