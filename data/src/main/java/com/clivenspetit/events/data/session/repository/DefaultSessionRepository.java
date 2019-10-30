@@ -36,7 +36,8 @@ import java.util.List;
 public class DefaultSessionRepository implements SessionRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionRepository.class);
-    public static final String SESSION_CACHE_KEY_TPL = "session:%s";
+    public static final String SESSION_BASE_CACHE_KEY_TPL = "event:%s:*";
+    public static final String SESSION_CACHE_KEY_TPL = "event:%s:session:%s";
 
     private final JpaSessionRepository jpaSessionRepository;
     private final Cache<String, Session> sessionCache;
@@ -59,7 +60,7 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public Session getSessionById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
-        logger.info("Search session with id: {}", id);
+        logger.info("Search session with id {}.", id);
 
         // Cache key
         String cacheKey = String.format(SESSION_CACHE_KEY_TPL, id);
@@ -67,7 +68,7 @@ public class DefaultSessionRepository implements SessionRepository {
         // Find session in cache
         Session cacheSession = sessionCache.get(cacheKey);
         if (cacheSession != null) {
-            logger.info("Session found in cache. Id: {}, ", id);
+            logger.info("Session id {} found in cache.", id);
             return cacheSession;
         }
 
@@ -78,14 +79,14 @@ public class DefaultSessionRepository implements SessionRepository {
 
                     // Cache session if found
                     if (session != null) {
-                        logger.info("Session found in db, cache it. Id: {}", id);
+                        logger.info("Session id {} found in db, cache it.", id);
                         sessionCache.put(cacheKey, session);
                     }
 
                     return session;
                 })
                 .orElseGet(() -> {
-                    logger.info("Session not found. Id: {}", id);
+                    logger.info("Session id {} not found.", id);
                     return null;
                 });
     }
@@ -154,7 +155,18 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public void deleteAllSessionsByEventId(@UUID String eventId) {
+        logger.info("Delete all sessions for event with id {}.", eventId);
 
+        // Cache key
+        String cacheKey = String.format(SESSION_BASE_CACHE_KEY_TPL, eventId);
+        logger.debug("Session generated pattern cache key: {}.", cacheKey);
+
+        jpaSessionRepository.deleteAllSessionsByEventId(eventId);
+        logger.info("All sessions with event id {} were deleted successfully.", eventId);
+
+        // Remove all sessions matching this event id from cache
+        sessionCache.remove(cacheKey);
+        logger.info("Remove all sessions matching the event id {} from cache.", eventId);
     }
 
     /**

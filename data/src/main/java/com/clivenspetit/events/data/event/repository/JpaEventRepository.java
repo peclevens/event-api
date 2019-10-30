@@ -18,6 +18,9 @@ package com.clivenspetit.events.data.event.repository;
 
 import com.clivenspetit.events.data.event.entity.EventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -27,4 +30,8 @@ import java.util.Optional;
 public interface JpaEventRepository extends JpaRepository<EventEntity, Long> {
 
     Optional<EventEntity> findByEventId(String id);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE FROM EventEntity e WHERE e.eventId = :eventId")
+    void deleteEventById(@Param("eventId") String eventId);
 }

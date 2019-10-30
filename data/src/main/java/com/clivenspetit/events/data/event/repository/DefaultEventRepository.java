@@ -21,6 +21,7 @@ import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
+import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +41,16 @@ public class DefaultEventRepository implements EventRepository {
     public static final String EVENT_CACHE_KEY_TPL = "event:%s";
 
     private final JpaEventRepository jpaEventRepository;
+    private final SessionRepository sessionRepository;
     private final Cache<String, Event> eventCache;
     private final EventMapper eventMapper;
 
     public DefaultEventRepository(
-            JpaEventRepository jpaEventRepository, Cache<String, Event> eventCache, EventMapper eventMapper) {
+            JpaEventRepository jpaEventRepository, SessionRepository sessionRepository,
+            Cache<String, Event> eventCache, EventMapper eventMapper) {
 
         this.jpaEventRepository = jpaEventRepository;
+        this.sessionRepository = sessionRepository;
         this.eventCache = eventCache;
         this.eventMapper = eventMapper;
     }
@@ -59,7 +63,7 @@ public class DefaultEventRepository implements EventRepository {
      */
     @Override
     public Event getEventById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
-        logger.info("Search event with id: {}", id);
+        logger.info("Search event with id {}.", id);
 
         // Cache key
         String cacheKey = String.format(EVENT_CACHE_KEY_TPL, id);
@@ -67,7 +71,7 @@ public class DefaultEventRepository implements EventRepository {
         // Find event in cache
         Event cacheEvent = eventCache.get(cacheKey);
         if (cacheEvent != null) {
-            logger.info("Event found in cache. Id: {}", id);
+            logger.info("Event id {} found in cache.", id);
             return cacheEvent;
         }
 
@@ -78,14 +82,14 @@ public class DefaultEventRepository implements EventRepository {
 
                     // Cache event if found
                     if (event != null) {
-                        logger.info("Event found in db, cache it. Id: {}", id);
                         eventCache.put(cacheKey, event);
+                        logger.info("Event id {} found in db, cache it.", id);
                     }
 
                     return event;
                 })
                 .orElseGet(() -> {
-                    logger.info("Event not found. Id: {}", id);
+                    logger.info("Event id {} not found.", id);
                     return null;
                 });
     }
@@ -121,7 +125,7 @@ public class DefaultEventRepository implements EventRepository {
      */
     @Override
     public String createEvent(@NotNull @Valid CreateEvent event) {
-        logger.info("Create event with title: `{}`", event.getName());
+        logger.info("Create event with title: {}", event.getName());
 
         // Map object to entity
         EventEntity eventEntity = eventMapper.from(event);
@@ -129,7 +133,7 @@ public class DefaultEventRepository implements EventRepository {
         // Save the event
         eventEntity = jpaEventRepository.save(eventEntity);
 
-        logger.info("Event with title: `{}` was created successfully with id: {}",
+        logger.info("Event with title: {} was created successfully with id: {}",
                 event.getName(), eventEntity.getEventId());
 
         return eventEntity.getEventId();
@@ -153,8 +157,23 @@ public class DefaultEventRepository implements EventRepository {
      * @param id The event id.
      */
     @Override
-    public void deleteEventById(@UUID String id) {
+    public void deleteEventById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+        logger.info("Delete event with id {}.", id);
 
+        // Cache key
+        String cacheKey = String.format(EVENT_CACHE_KEY_TPL, id);
+        logger.debug("Event generated cache key {}.", cacheKey);
+
+        // Delete all event sessions from storage
+        sessionRepository.deleteAllSessionsByEventId(id);
+
+        // Delete event from storage
+        jpaEventRepository.deleteEventById(id);
+        logger.info("Event with id {} was deleted successfully.", id);
+
+        // Remove event in cache
+        eventCache.remove(cacheKey);
+        logger.info("Remove event with id {} from cache.", id);
     }
 
     /**
