@@ -61,18 +61,18 @@ public class LocationEntity implements Serializable {
     @Column(name = "version")
     private Integer version = 0;
 
-    @Size(max = 120, message = "Address should have be {max} characters max.")
     @NotBlank(message = "Address is required.")
+    @Size(max = 120, message = "Address should have be {max} characters max.")
     @Column(name = "address")
     private String address;
 
-    @Size(max = 60, message = "City should have be {max} characters max.")
     @NotBlank(message = "City is required.")
+    @Size(max = 60, message = "City should have be {max} characters max.")
     @Column(name = "city")
     private String city;
 
-    @Size(max = 60, message = "Country should have be {max} characters max.")
     @NotBlank(message = "Country is required.")
+    @Size(max = 60, message = "Country should have be {max} characters max.")
     @Column(name = "country")
     private String country;
 

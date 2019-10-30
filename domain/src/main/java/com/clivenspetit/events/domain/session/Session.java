@@ -47,7 +47,7 @@ public final class Session implements Serializable {
      * The version of this object.
      */
     @PositiveOrZero(message = "Version should be greater or equal to zero.")
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Session id.
@@ -58,8 +58,8 @@ public final class Session implements Serializable {
     /**
      * Session name
      */
-    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @NotBlank(message = "Name is required.")
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     private String name;
 
     /**
@@ -84,9 +84,9 @@ public final class Session implements Serializable {
     /**
      * The name of the speaker of the session
      */
+    @NotBlank(message = "Presenter name is required.")
     @Name(message = "Presenter name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 120, message = "Presenter name should be between {min} and {max} characters.")
-    @NotBlank(message = "Presenter name is required.")
     private String presenter;
 
     /**
@@ -98,7 +98,7 @@ public final class Session implements Serializable {
     private Set<String> voters;
 
     private Session(Session.Builder builder) {
-        this.version = builder.version;
+        this.version = builder.version != null ? builder.version : 0;
         this.id = builder.id;
         this.name = builder.name;
         this.description = builder.description;

@@ -66,8 +66,8 @@ public class EventEntity implements Serializable {
     /**
      * Event name
      */
-    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @NotBlank(message = "Name is required.")
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @Column(name = "name", unique = true)
     private String name;
 

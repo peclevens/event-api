@@ -46,7 +46,7 @@ public final class Event implements Serializable {
      * The version of this object.
      */
     @PositiveOrZero(message = "Version should be greater or equal to zero.")
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Event id
@@ -57,8 +57,8 @@ public final class Event implements Serializable {
     /**
      * Event name
      */
-    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @NotBlank(message = "Name is required.")
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     private String name;
 
     /**
@@ -101,7 +101,7 @@ public final class Event implements Serializable {
     private Set<Session> sessions;
 
     private Event(Event.Builder builder) {
-        this.version = builder.version;
+        this.version = builder.version != null ? builder.version : 0;
         this.id = builder.id;
         this.name = builder.name;
         this.startDate = builder.startDate;

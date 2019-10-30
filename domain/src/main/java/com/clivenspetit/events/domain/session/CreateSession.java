@@ -40,8 +40,8 @@ public final class CreateSession implements Serializable {
     /**
      * Session name
      */
-    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @NotBlank(message = "Name is required.")
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     private String name;
 
     /**
@@ -66,9 +66,9 @@ public final class CreateSession implements Serializable {
     /**
      * The name of the speaker of the session
      */
+    @NotBlank(message = "Presenter name is required.")
     @Name(message = "Presenter name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 120, message = "Presenter name should be between {min} and {max} characters.")
-    @NotBlank(message = "Presenter name is required.")
     private String presenter;
 
     private CreateSession(CreateSession.Builder builder) {

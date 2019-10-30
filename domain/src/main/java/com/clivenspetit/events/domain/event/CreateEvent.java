@@ -40,8 +40,8 @@ public final class CreateEvent {
     /**
      * Event name
      */
-    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     @NotBlank(message = "Name is required.")
+    @Size(min = 2, max = 120, message = "Name should be between {min} and {max} characters.")
     private String name;
 
     /**
@@ -69,7 +69,7 @@ public final class CreateEvent {
      */
     @PositiveOrZero(message = "Price should be greater or equal to zero.")
     @DecimalMax(value = "999.99", message = "Price should be less than equals to {value}.")
-    private Double price = 0.0D;
+    private Double price;
 
     /**
      * Event start datetime
@@ -89,7 +89,7 @@ public final class CreateEvent {
         this.imageUrl = builder.imageUrl;
         this.onlineUrl = builder.onlineUrl;
         this.location = builder.location;
-        this.price = builder.price;
+        this.price = builder.price != null ? builder.price : 0.0D;
         this.startDate = builder.startDate;
         this.sessions = builder.sessions != null ? builder.sessions : new LinkedHashSet<>();
     }

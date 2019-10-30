@@ -53,18 +53,18 @@ public class UserEntity implements Serializable {
     /**
      * The user first name
      */
+    @NotBlank(message = "First name is required.")
     @Name(message = "First name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 60, message = "First name should be between {min} and {max} characters.")
-    @NotBlank(message = "First name is required.")
     @Column(name = "first_name")
     private String firstName;
 
     /**
      * The user last name
      */
+    @NotBlank(message = "Last name is required.")
     @Name(message = "Last name should contain only characters from a-zA-Z and symbols like ',. -")
     @Size(min = 1, max = 60, message = "Last name should be between {min} and {max} characters.")
-    @NotBlank(message = "Last name is required.")
     @Column(name = "last_name")
     private String lastName;
 
