@@ -21,7 +21,6 @@ import com.clivenspetit.events.data.session.entity.SessionEntity;
 import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Url;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -107,15 +106,14 @@ public class EventEntity implements Serializable {
      * Location
      */
     @Valid
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "eventId", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false, mappedBy = "eventId")
     private LocationEntity location;
 
     /**
      * Event sessions
      */
     @Valid
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "eventId")
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
     @Column(name = "event_id")
     private Set<SessionEntity> sessions;
 

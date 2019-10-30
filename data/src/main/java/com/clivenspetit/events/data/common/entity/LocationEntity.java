@@ -49,7 +49,7 @@ public class LocationEntity implements Serializable {
     @Column(name = "location_id")
     private String locationId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false, unique = true)
     private EventEntity eventId;
 

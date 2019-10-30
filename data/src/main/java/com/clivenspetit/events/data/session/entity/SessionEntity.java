@@ -65,7 +65,7 @@ public class SessionEntity implements Serializable {
     @Column(name = "session_id")
     private String sessionId;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity eventId;
 
