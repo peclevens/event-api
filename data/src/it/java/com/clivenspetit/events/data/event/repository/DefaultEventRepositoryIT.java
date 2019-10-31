@@ -17,12 +17,16 @@
 package com.clivenspetit.events.data.event.repository;
 
 import com.clivenspetit.events.data.event.mapper.EventMapper;
+import com.clivenspetit.events.data.session.mapper.SessionMapper;
+import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
+import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.CreateEventMother;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +41,6 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
-import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
 import static com.clivenspetit.events.data.event.repository.DefaultEventRepository.EVENT_CACHE_KEY_TPL;
@@ -58,12 +61,18 @@ public class DefaultEventRepositoryIT {
 
     private static CacheManager cacheManager;
     private static MutableConfiguration<String, Event> eventMutableConfiguration = new MutableConfiguration<>();
+    private static MutableConfiguration<String, Session> sessionMutableConfiguration = new MutableConfiguration<>();
     private static Cache<String, Event> eventCache;
+    private static Cache<String, Session> sessionCache;
 
     @Autowired
     private JpaEventRepository jpaEventRepository;
 
+    @Autowired
+    private JpaSessionRepository jpaSessionRepository;
+
     private EventRepository eventRepository;
+    private SessionRepository sessionRepository;
 
     @BeforeClass
     public static void beforeClass() throws Throwable {
@@ -71,6 +80,7 @@ public class DefaultEventRepositoryIT {
         cacheManager = cachingProvider.getCacheManager();
 
         eventCache = cacheManager.createCache("eventCache", eventMutableConfiguration);
+        sessionCache = cacheManager.createCache("sessionCache", sessionMutableConfiguration);
     }
 
     @AfterClass
@@ -80,7 +90,10 @@ public class DefaultEventRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        eventRepository = new DefaultEventRepository(jpaEventRepository, eventCache, EventMapper.INSTANCE);
+        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, sessionCache, SessionMapper.INSTANCE);
+
+        eventRepository = new DefaultEventRepository(jpaEventRepository, sessionRepository, eventCache,
+                EventMapper.INSTANCE);
     }
 
     @After
@@ -152,8 +165,7 @@ public class DefaultEventRepositoryIT {
 
     @Test
     public void createEvent_eventWithSessionWithLocationAndOnlineUrl_returnNewEventId() {
-        CreateEvent createEvent = CreateEventMother.validEvent()
-                .build();
+        CreateEvent createEvent = CreateEventMother.validEvent().build();
 
         // Create the event
         String id = eventRepository.createEvent(createEvent);
@@ -228,25 +240,44 @@ public class DefaultEventRepositoryIT {
         assertThat(session.getPresenter(), is("John Doe"));
     }
 
-    @Test(expected = ConstraintViolationException.class)
-    public void createEvent_eventWithNoLocation_throwException() {
-        CreateEvent createEvent = CreateEventMother.validEvent()
-                .location(null)
-                .onlineUrl(null)
-                .build();
-
-        // Create the event
-        eventRepository.createEvent(createEvent);
-    }
-
     @Test
     public void updateEvent() {
 
     }
 
     @Test
-    public void deleteEventById() {
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void deleteEventById_eventWithSessionAndLocation_completed() {
+        // Delete event
+        eventRepository.deleteEventById(EVENT_ID);
 
+        assertThat(jpaEventRepository.count(), is(0L));
+        assertThat(jpaSessionRepository.count(), is(0L));
+    }
+
+    @Test
+    @Sql("classpath:db/sample/create-event.sql")
+    public void deleteEventById_eventWithoutSessionAndLocation_completed() {
+        // Delete event
+        eventRepository.deleteEventById(EVENT_ID);
+
+        assertThat(jpaEventRepository.count(), is(0L));
+        assertThat(jpaSessionRepository.count(), is(0L));
+    }
+
+    @Test
+    @Sql("classpath:db/sample/create-event.sql")
+    public void deleteEventById_eventNotFound_completed() {
+        // Delete event
+        eventRepository.deleteEventById(UUID.randomUUID().toString());
+
+        // Process new count
+        assertThat(jpaEventRepository.count(), is(1L));
+        assertThat(jpaSessionRepository.count(), is(0L));
     }
 
     @Test
