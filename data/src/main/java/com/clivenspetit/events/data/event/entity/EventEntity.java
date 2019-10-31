@@ -18,7 +18,6 @@ package com.clivenspetit.events.data.event.entity;
 
 import com.clivenspetit.events.data.common.entity.LocationEntity;
 import com.clivenspetit.events.data.session.entity.SessionEntity;
-import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Url;
 
@@ -33,7 +32,6 @@ import java.util.Set;
 /**
  * @author Clivens Petit
  */
-@AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
 @Entity
 @Table(name = "event")
 public class EventEntity implements Serializable {
@@ -114,7 +112,6 @@ public class EventEntity implements Serializable {
      */
     @Valid
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
-    @Column(name = "event_id")
     private Set<SessionEntity> sessions;
 
     /**

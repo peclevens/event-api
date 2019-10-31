@@ -62,7 +62,7 @@ public class DefaultEventRepository implements EventRepository {
      * @return The event matching the id passed.
      */
     @Override
-    public Event getEventById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+    public Event getEventById(@UUID String id) {
         logger.info("Search event with id {}.", id);
 
         // Cache key
@@ -101,7 +101,7 @@ public class DefaultEventRepository implements EventRepository {
      * @return Return true if exists, false otherwise.
      */
     @Override
-    public Boolean eventExists(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+    public Boolean eventExists(@UUID String id) {
         return this.getEventById(id) != null;
     }
 
@@ -157,7 +157,7 @@ public class DefaultEventRepository implements EventRepository {
      * @param id The event id.
      */
     @Override
-    public void deleteEventById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+    public void deleteEventById(@UUID String id) {
         logger.info("Delete event with id {}.", id);
 
         // Cache key

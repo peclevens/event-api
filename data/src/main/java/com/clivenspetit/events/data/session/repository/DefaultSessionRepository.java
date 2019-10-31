@@ -59,7 +59,7 @@ public class DefaultSessionRepository implements SessionRepository {
      * @return The session matching the id passed.
      */
     @Override
-    public Session getSessionById(@UUID(message = "Session id should be a valid v4 UUID.") String id) {
+    public Session getSessionById(@UUID String id) {
         logger.info("Search session with id {}.", id);
 
         // Cache key
