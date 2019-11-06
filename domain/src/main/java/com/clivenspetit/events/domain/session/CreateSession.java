@@ -140,13 +140,7 @@ public final class CreateSession implements Serializable {
         }
 
         public CreateSession build() {
-            CreateSession createSession = new CreateSession(this);
-            createSession.level = this.level;
-            createSession.description = this.description;
-            createSession.presenter = this.presenter;
-            createSession.name = this.name;
-            createSession.duration = this.duration;
-            return createSession;
+            return new CreateSession(this);
         }
     }
 }

@@ -116,6 +116,24 @@ public final class Event implements Serializable {
         return new Event.Builder();
     }
 
+    public static Event.Builder builder(Event event) {
+        Builder builder = new Builder();
+        builder.version = event.version;
+        builder.id = event.id;
+        builder.name = event.name;
+        builder.startDate = event.startDate;
+        builder.price = event.price;
+        builder.imageUrl = event.imageUrl;
+        builder.onlineUrl = event.onlineUrl;
+        builder.location = Location.builder(event.location).build();
+        builder.sessions = new LinkedHashSet<>();
+
+        if (event.sessions != null && !event.sessions.isEmpty())
+            event.sessions.forEach(session -> builder.sessions.add(Session.builder(session).build()));
+
+        return builder;
+    }
+
     public Integer getVersion() {
         return version;
     }
@@ -213,17 +231,7 @@ public final class Event implements Serializable {
         }
 
         public Event build() {
-            Event event = new Event(this);
-            event.imageUrl = this.imageUrl;
-            event.sessions = this.sessions;
-            event.startDate = this.startDate;
-            event.name = this.name;
-            event.version = this.version;
-            event.id = this.id;
-            event.onlineUrl = this.onlineUrl;
-            event.location = this.location;
-            event.price = this.price;
-            return event;
+            return new Event(this);
         }
     }
 }

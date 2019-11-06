@@ -73,6 +73,16 @@ public final class Location implements Serializable {
         return new Location.Builder();
     }
 
+    public static Location.Builder builder(Location location) {
+        Builder builder = new Builder();
+        builder.version = location.version;
+        builder.address = location.address;
+        builder.city = location.city;
+        builder.country = location.country;
+
+        return builder;
+    }
+
     public static final class Builder {
         private Integer version = 0;
         private String address;
@@ -104,12 +114,7 @@ public final class Location implements Serializable {
         }
 
         public Location build() {
-            Location location = new Location(this);
-            location.version = version;
-            location.address = address;
-            location.city = city;
-            location.country = country;
-            return location;
+            return new Location(this);
         }
     }
 }

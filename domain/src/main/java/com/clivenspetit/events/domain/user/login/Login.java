@@ -77,10 +77,7 @@ public class Login implements Serializable {
         }
 
         public Login build() {
-            Login user = new Login(this);
-            user.password = this.password;
-            user.email = this.email;
-            return user;
+            return new Login(this);
         }
     }
 }

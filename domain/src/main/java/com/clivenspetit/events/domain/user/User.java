@@ -131,13 +131,7 @@ public class User implements Serializable {
         }
 
         public User build() {
-            User user = new User(this);
-            user.lastName = this.lastName;
-            user.id = this.id;
-            user.password = this.password;
-            user.firstName = this.firstName;
-            user.email = this.email;
-            return user;
+            return new User(this);
         }
     }
 }

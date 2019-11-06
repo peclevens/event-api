@@ -175,15 +175,7 @@ public final class CreateEvent {
         }
 
         public CreateEvent build() {
-            CreateEvent createEvent = new CreateEvent(this);
-            createEvent.price = this.price;
-            createEvent.onlineUrl = this.onlineUrl;
-            createEvent.imageUrl = this.imageUrl;
-            createEvent.sessions = this.sessions;
-            createEvent.startDate = this.startDate;
-            createEvent.name = this.name;
-            createEvent.location = this.location;
-            return createEvent;
+            return new CreateEvent(this);
         }
     }
 }

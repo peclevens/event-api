@@ -54,6 +54,7 @@ public class UpdateUser implements Serializable {
     private UpdateUser(UpdateUser.Builder builder) {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
+        this.password = builder.password;
     }
 
     public static UpdateUser.Builder builder() {
@@ -97,11 +98,7 @@ public class UpdateUser implements Serializable {
         }
 
         public UpdateUser build() {
-            UpdateUser user = new UpdateUser(this);
-            user.lastName = this.lastName;
-            user.firstName = this.firstName;
-            user.password = this.password;
-            return user;
+            return new UpdateUser(this);
         }
     }
 }

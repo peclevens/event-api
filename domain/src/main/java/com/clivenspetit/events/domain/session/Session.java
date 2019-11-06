@@ -144,6 +144,20 @@ public final class Session implements Serializable {
         return new Session.Builder();
     }
 
+    public static Session.Builder builder(Session session) {
+        Builder builder = new Builder();
+        builder.version = session.version;
+        builder.id = session.id;
+        builder.name = session.name;
+        builder.description = session.description;
+        builder.level = session.level;
+        builder.duration = session.duration;
+        builder.presenter = session.presenter;
+        builder.voters = session.voters;
+
+        return builder;
+    }
+
     public static final class Builder {
         private Integer version = 0;
         private String id;
@@ -199,16 +213,7 @@ public final class Session implements Serializable {
         }
 
         public Session build() {
-            Session session = new Session(this);
-            session.version = this.version;
-            session.description = this.description;
-            session.presenter = this.presenter;
-            session.id = this.id;
-            session.voters = this.voters;
-            session.name = this.name;
-            session.duration = this.duration;
-            session.level = this.level;
-            return session;
+            return new Session(this);
         }
     }
 }
