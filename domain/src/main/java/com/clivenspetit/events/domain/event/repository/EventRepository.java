@@ -18,6 +18,7 @@ package com.clivenspetit.events.domain.event.repository;
 
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.event.UpdateEvent;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,7 +73,7 @@ public interface EventRepository {
      * @param event A modified event object to store to a datasource.
      * @return The newly updated event.
      */
-    Event updateEvent(@UUID String id, @NotNull @Valid Event event);
+    Event updateEvent(@UUID String id, @NotNull @Valid UpdateEvent event);
 
     /**
      * Delete event by id.

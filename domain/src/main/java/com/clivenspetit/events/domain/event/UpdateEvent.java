@@ -17,7 +17,6 @@
 package com.clivenspetit.events.domain.event;
 
 import com.clivenspetit.events.domain.common.Location;
-import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.validation.constraints.AnyOf;
 import com.clivenspetit.events.domain.validation.constraints.Url;
 
@@ -25,8 +24,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * CreateEvent
@@ -36,9 +33,15 @@ import java.util.Set;
  * @author Clivens Petit
  */
 @AnyOf(fields = {"onlineUrl", "location"}, message = "Location or online url is required. Both are allowed too.")
-public final class CreateEvent implements Serializable {
+public final class UpdateEvent implements Serializable {
 
     private static final long serialVersionUID = 0L;
+
+    /**
+     * The version of this object.
+     */
+    @PositiveOrZero(message = "Version should be greater or equal to zero.")
+    private Integer version;
 
     /**
      * Event name
@@ -81,20 +84,18 @@ public final class CreateEvent implements Serializable {
     @Future(message = "Start date should be in the future.")
     private LocalDateTime startDate;
 
-    /**
-     * Event sessions
-     */
-    @Valid
-    private Set<CreateSession> sessions;
-
-    private CreateEvent(CreateEvent.Builder builder) {
+    private UpdateEvent(UpdateEvent.Builder builder) {
+        this.version = builder.version;
         this.name = builder.name;
         this.imageUrl = builder.imageUrl;
         this.onlineUrl = builder.onlineUrl;
         this.location = builder.location;
         this.price = builder.price != null ? builder.price : 0.0D;
         this.startDate = builder.startDate;
-        this.sessions = builder.sessions != null ? builder.sessions : new LinkedHashSet<>();
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 
     public String getName() {
@@ -121,25 +122,26 @@ public final class CreateEvent implements Serializable {
         return startDate;
     }
 
-    public Set<CreateSession> getSessions() {
-        return sessions;
-    }
-
-    public static CreateEvent.Builder builder() {
-        return new CreateEvent.Builder();
+    public static UpdateEvent.Builder builder() {
+        return new UpdateEvent.Builder();
     }
 
     public static final class Builder {
+        private Integer version;
         private String name;
         private String imageUrl;
         private String onlineUrl;
         private Location location;
         private Double price = 0.0D;
         private LocalDateTime startDate;
-        private Set<CreateSession> sessions;
 
         private Builder() {
 
+        }
+
+        public Builder version(Integer version) {
+            this.version = version;
+            return this;
         }
 
         public Builder name(String name) {
@@ -172,13 +174,8 @@ public final class CreateEvent implements Serializable {
             return this;
         }
 
-        public Builder sessions(Set<CreateSession> sessions) {
-            this.sessions = sessions;
-            return this;
-        }
-
-        public CreateEvent build() {
-            return new CreateEvent(this);
+        public UpdateEvent build() {
+            return new UpdateEvent(this);
         }
     }
 }

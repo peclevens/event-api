@@ -18,6 +18,7 @@ package com.clivenspetit.events.domain.session.repository;
 
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.UpdateSession;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.springframework.data.domain.Sort;
 
@@ -73,7 +74,7 @@ public interface SessionRepository {
      * @param session A modified session object to store to a datasource.
      * @return The newly updated session.
      */
-    Session updateSession(@UUID String id, @NotNull @Valid Session session);
+    Session updateSession(@UUID String id, @NotNull @Valid UpdateSession session);
 
     /**
      * Delete session by id.
