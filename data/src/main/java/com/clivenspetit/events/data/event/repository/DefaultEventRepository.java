@@ -32,6 +32,9 @@ import org.springframework.data.domain.Pageable;
 import javax.cache.Cache;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Clivens Petit
@@ -207,5 +210,24 @@ public class DefaultEventRepository implements EventRepository {
     public void deleteAllEvents() {
         logger.info("Delete all events.");
 
+        // Find all events to be deleted
+        List<EventEntity> events = jpaEventRepository.findAll();
+
+        // Collect all event ids to be deleted
+        Set<String> eventIds = events.stream()
+                .map(EventEntity::getEventId)
+                .collect(Collectors.toSet());
+
+        // Delete all sessions by event ids
+        sessionRepository.deleteAllSessionsByEventIds(eventIds);
+        logger.info("All sessions were deleted successfully.");
+
+        // Delete all events
+        jpaEventRepository.deleteAllEvents();
+        logger.info("All events were deleted successfully.");
+
+        // Clear cache
+        eventCache.clear();
+        logger.debug("Remove all events from cache.");
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Sessions CRUD operations management.
@@ -89,6 +90,13 @@ public interface SessionRepository {
      * @param eventId The event id.
      */
     void deleteAllSessionsByEventId(@UUID String eventId);
+
+    /**
+     * Delete all sessions providing a list of event ids.
+     *
+     * @param eventIds List of event id.
+     */
+    void deleteAllSessionsByEventIds(@NotNull Set<@UUID String> eventIds);
 
     /**
      * Upvote session by id.

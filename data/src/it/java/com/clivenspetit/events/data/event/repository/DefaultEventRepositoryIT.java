@@ -326,7 +326,20 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-event2.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
     public void deleteAllEvents() {
+        // Process new count
+        assertThat(jpaEventRepository.count(), is(2L));
 
+        // Delete event
+        eventRepository.deleteAllEvents();
+
+        // Process new count
+        assertThat(jpaEventRepository.count(), is(0L));
     }
 }

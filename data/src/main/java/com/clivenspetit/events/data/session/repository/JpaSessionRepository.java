@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Clivens Petit
@@ -35,4 +36,9 @@ public interface JpaSessionRepository extends JpaRepository<SessionEntity, Long>
     @Query(value = "DELETE FROM SessionEntity s WHERE s.eventId = ( " +
             "SELECT e FROM EventEntity e WHERE e.eventId = :eventId)")
     void deleteAllSessionsByEventId(@Param("eventId") String eventId);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "DELETE FROM SessionEntity s WHERE s.eventId in( " +
+            "SELECT e FROM EventEntity e WHERE e.eventId in(:eventIds))")
+    void deleteAllSessionsByEventIds(@Param("eventIds") Set<String> eventIds);
 }

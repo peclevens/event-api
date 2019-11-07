@@ -30,6 +30,7 @@ import javax.cache.Cache;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Clivens Petit
@@ -168,6 +169,16 @@ public class DefaultSessionRepository implements SessionRepository {
         // Remove all sessions matching this event id from cache
         sessionCache.remove(cacheKey);
         logger.info("Remove all sessions matching the event id {} from cache.", eventId);
+    }
+
+    /**
+     * Delete all sessions providing a list of event ids.
+     *
+     * @param eventIds List of event id.
+     */
+    @Override
+    public void deleteAllSessionsByEventIds(@NotNull Set<@UUID String> eventIds) {
+        jpaSessionRepository.deleteAllSessionsByEventIds(eventIds);
     }
 
     /**
