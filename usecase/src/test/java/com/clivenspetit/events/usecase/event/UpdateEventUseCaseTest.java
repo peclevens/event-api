@@ -20,6 +20,8 @@ import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Location;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.EventMother;
+import com.clivenspetit.events.domain.event.UpdateEvent;
+import com.clivenspetit.events.domain.event.UpdateEventMother;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import org.junit.After;
@@ -53,18 +55,16 @@ public class UpdateEventUseCaseTest {
     private EventRepository eventRepository;
     private UpdateEventUseCase updateEventUseCase;
     private Event event;
-    private Event modifiedEvent;
+    private UpdateEvent modifiedEvent;
 
     @Before
     public void setUp() throws Exception {
         eventRepository = mock(EventRepository.class);
         updateEventUseCase = new UpdateEventUseCase(eventRepository);
 
-        event = EventMother.validEvent().build();
-
-        modifiedEvent = EventMother.validEvent()
+        modifiedEvent = UpdateEventMother.validEvent()
                 .name("Using Angular Pipes")
-                .price(BigDecimal.ZERO)
+                .price(0.00D)
                 .location(Location.builder()
                         .country("France")
                         .city("Paris")
@@ -72,8 +72,14 @@ public class UpdateEventUseCaseTest {
                         .build())
                 .build();
 
+        event = EventMother.validEvent()
+                .name(modifiedEvent.getName())
+                .price(BigDecimal.valueOf(modifiedEvent.getPrice()))
+                .location(modifiedEvent.getLocation())
+                .build();
+
         when(eventRepository.updateEvent(EVENT_ID, modifiedEvent))
-                .thenReturn(modifiedEvent);
+                .thenReturn(event);
 
         when(eventRepository.eventExists(EVENT_ID))
                 .thenReturn(Boolean.TRUE);
@@ -90,7 +96,7 @@ public class UpdateEventUseCaseTest {
 
     @Test
     public void updateEvent_nullArgumentPassed_throwException() throws Exception {
-        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
+        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, UpdateEvent.class);
         Object[] parameters = new Object[]{null, null};
 
         violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
@@ -100,8 +106,8 @@ public class UpdateEventUseCaseTest {
 
     @Test
     public void updateEvent_invalidArgumentPassed_throwException() throws Exception {
-        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
-        Object[] parameters = new Object[]{"id", Event.builder().build()};
+        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, UpdateEvent.class);
+        Object[] parameters = new Object[]{"id", UpdateEvent.builder().build()};
 
         violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
 
@@ -110,7 +116,7 @@ public class UpdateEventUseCaseTest {
 
     @Test(expected = EventNotFoundException.class)
     public void updateEvent_unknownIdPassed_throwException() {
-        updateEventUseCase.updateEvent("cd4c770a-e53c-4d19-8393-3b37ec811b66", event);
+        updateEventUseCase.updateEvent("cd4c770a-e53c-4d19-8393-3b37ec811b66", modifiedEvent);
     }
 
     @Test
@@ -118,26 +124,26 @@ public class UpdateEventUseCaseTest {
         LocalDateTime startDate = LocalDateTime.of(2018, 9, 26,
                 10, 0, 0);
 
-        Event event = EventMother.validEvent()
+        UpdateEvent event = UpdateEventMother.validEvent()
                 .name("A")
-                .price(BigDecimal.valueOf(-2.00))
+                .price(-2.00)
                 .onlineUrl(null)
                 .location(null)
                 .startDate(startDate)
                 .build();
 
-        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, Event.class);
+        Method method = UpdateEventUseCase.class.getMethod("updateEvent", String.class, UpdateEvent.class);
         Object[] parameters = new Object[]{EVENT_ID, event};
 
         violations = validationResource.executableValidator.validateParameters(updateEventUseCase, method, parameters);
 
-        assertThat("Invalid arguments should not pass.", violations.size(), is(4));
+        assertThat("Invalid arguments should not pass.", violations.size(), is(5));
     }
 
     @Test
     public void updateEvent_validModifiedEventPassed_returnUpdatedEvent() throws Exception {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
+        ArgumentCaptor<UpdateEvent> eventArgumentCaptor = ArgumentCaptor.forClass(UpdateEvent.class);
 
         Event updatedEvent = updateEventUseCase.updateEvent(EVENT_ID, modifiedEvent);
 
@@ -151,7 +157,7 @@ public class UpdateEventUseCaseTest {
         assertThat(argumentCaptor.getAllValues().get(1), is(EVENT_ID));
         assertThat(eventArgumentCaptor.getAllValues().get(0).getName(), is(modifiedEvent.getName()));
         assertThat(updatedEvent.getName(), is("Using Angular Pipes"));
-        assertThat(updatedEvent.getPrice(), equalTo(BigDecimal.ZERO));
+        assertThat(updatedEvent.getPrice(), equalTo(BigDecimal.valueOf(0.0)));
         assertThat(updatedEvent.getLocation().getCountry(), is("France"));
         assertThat(updatedEvent.getLocation().getCity(), is("Paris"));
         assertThat(updatedEvent.getLocation().getAddress(), is("72 Rue Nationale"));

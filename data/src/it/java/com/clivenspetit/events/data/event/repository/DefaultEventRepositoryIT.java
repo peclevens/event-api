@@ -21,9 +21,8 @@ import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.domain.common.Level;
-import com.clivenspetit.events.domain.event.CreateEvent;
-import com.clivenspetit.events.domain.event.CreateEventMother;
-import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.common.LocationMother;
+import com.clivenspetit.events.domain.event.*;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
@@ -241,8 +240,54 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
-    public void updateEvent() {
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void updateEvent_eventNameAndLocationCityUpdated_returnUpdatedEvent() {
+        String eventName = "New event name";
+        String locationCity = "New location city";
 
+        // Modify event
+        UpdateEvent modifiedEvent = UpdateEventMother.validEvent()
+                .name(eventName)
+                .location(LocationMother.validLocation()
+                        .city(locationCity)
+                        .build())
+                .build();
+
+        Event updatedEvent = eventRepository.updateEvent(EVENT_ID, modifiedEvent);
+
+        Session session = updatedEvent.getSessions().iterator().next();
+
+        assertThat(session, is(notNullValue()));
+        assertThat(updatedEvent.getName(), is(eventName));
+        assertThat(updatedEvent.getLocation().getCountry(), is("United States"));
+        assertThat(updatedEvent.getLocation().getCity(), is(locationCity));
+        assertThat(session.getLevel(), is(Level.BEGINNER));
+        assertThat(session.getPresenter(), is("John Doe"));
+    }
+
+    @Test
+    @Sql("classpath:db/sample/create-event.sql")
+    public void updateEvent_updateEventNameAndAddNewLocation_returnUpdatedEvent() {
+        String eventName = "New event name";
+        String locationCity = "New location city";
+
+        // Modify event
+        UpdateEvent modifiedEvent = UpdateEventMother.validEvent()
+                .name(eventName)
+                .location(LocationMother.validLocation()
+                        .city(locationCity)
+                        .build())
+                .build();
+
+        Event updatedEvent = eventRepository.updateEvent(EVENT_ID, modifiedEvent);
+
+        assertThat(updatedEvent.getName(), is(eventName));
+        assertThat(updatedEvent.getLocation().getCountry(), is("United States"));
+        assertThat(updatedEvent.getLocation().getCity(), is(locationCity));
     }
 
     @Test

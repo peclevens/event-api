@@ -17,6 +17,7 @@
 package com.clivenspetit.events.usecase.event;
 
 import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.event.UpdateEvent;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -36,7 +37,9 @@ public class UpdateEventUseCase {
         this.eventRepository = eventRepository;
     }
 
-    public Event updateEvent(@UUID(message = "Id should be a valid v4 UUID.") String id, @NotNull @Valid Event event) {
+    public Event updateEvent(@UUID(message = "Id should be a valid v4 UUID.") String id,
+                             @NotNull @Valid UpdateEvent event) {
+
         Event updatedEvent = null;
 
         // Make sure the event exists

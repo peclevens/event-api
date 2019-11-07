@@ -20,6 +20,7 @@ import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
+import com.clivenspetit.events.domain.event.UpdateEvent;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -147,8 +148,31 @@ public class DefaultEventRepository implements EventRepository {
      * @return The newly updated event.
      */
     @Override
-    public Event updateEvent(@UUID String id, @NotNull @Valid Event event) {
-        return null;
+    public Event updateEvent(@UUID String id, @NotNull @Valid UpdateEvent event) {
+        logger.info("Update event with id: {}.", id);
+
+        // Cache key
+        String cacheKey = String.format(EVENT_CACHE_KEY_TPL, id);
+        logger.debug("Event generated cache key {}.", cacheKey);
+
+        // Find old event
+        EventEntity oldEvent = jpaEventRepository.findByEventId(id).orElse(null);
+
+        // Merge events
+        EventEntity mergeEvent = eventMapper.merge(event, oldEvent);
+
+        // Update the event
+        EventEntity eventEntity = jpaEventRepository.save(mergeEvent);
+
+        Event updatedEvent = eventMapper.from(eventEntity);
+        logger.info("Event with id: {} was updated successfully. The new title is {}.",
+                updatedEvent.getId(), updatedEvent.getName());
+
+        // Remove event in cache
+        eventCache.remove(cacheKey);
+        logger.debug("Remove event with id {} from cache.", id);
+
+        return updatedEvent;
     }
 
     /**
@@ -173,7 +197,7 @@ public class DefaultEventRepository implements EventRepository {
 
         // Remove event in cache
         eventCache.remove(cacheKey);
-        logger.info("Remove event with id {} from cache.", id);
+        logger.debug("Remove event with id {} from cache.", id);
     }
 
     /**
@@ -181,6 +205,7 @@ public class DefaultEventRepository implements EventRepository {
      */
     @Override
     public void deleteAllEvents() {
+        logger.info("Delete all events.");
 
     }
 }

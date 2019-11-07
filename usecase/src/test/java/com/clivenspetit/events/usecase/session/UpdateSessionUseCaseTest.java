@@ -20,6 +20,8 @@ import com.clivenspetit.events.domain.ValidationResource;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.SessionMother;
+import com.clivenspetit.events.domain.session.UpdateSession;
+import com.clivenspetit.events.domain.session.UpdateSessionMother;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import org.junit.After;
@@ -51,23 +53,27 @@ public class UpdateSessionUseCaseTest {
     private SessionRepository sessionRepository;
     private UpdateSessionUseCase updateSessionUseCase;
     private Session session;
-    private Session modifiedSession;
+    private UpdateSession modifiedSession;
 
     @Before
     public void setUp() throws Exception {
         sessionRepository = mock(SessionRepository.class);
         updateSessionUseCase = new UpdateSessionUseCase(sessionRepository);
 
-        session = SessionMother.validSession().build();
-
-        modifiedSession = SessionMother.validSession()
+        modifiedSession = UpdateSessionMother.validSession()
                 .name("Using Angular Pipes")
                 .description("Learn all about the new pipes in Angular")
                 .level(Level.ADVANCED)
                 .build();
 
+        session = SessionMother.validSession()
+                .name(modifiedSession.getName())
+                .description(modifiedSession.getDescription())
+                .level(modifiedSession.getLevel())
+                .build();
+
         when(sessionRepository.updateSession(SESSION_ID, modifiedSession))
-                .thenReturn(modifiedSession);
+                .thenReturn(session);
 
         when(sessionRepository.sessionExists(SESSION_ID))
                 .thenReturn(Boolean.TRUE);
@@ -84,7 +90,7 @@ public class UpdateSessionUseCaseTest {
 
     @Test
     public void updateSession_nullArgumentPassed_throwException() throws Exception {
-        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
+        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, UpdateSession.class);
         Object[] parameters = new Object[]{null, null};
 
         violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
@@ -95,23 +101,23 @@ public class UpdateSessionUseCaseTest {
 
     @Test
     public void updateSession_invalidArgumentPassed_throwException() throws Exception {
-        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
-        Object[] parameters = new Object[]{"id", Session.builder().build()};
+        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, UpdateSession.class);
+        Object[] parameters = new Object[]{"id", UpdateSession.builder().build()};
 
         violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
                 method, parameters);
 
-        assertThat("Invalid arguments should not pass.", violations, hasSize(8));
+        assertThat("Invalid arguments should not pass.", violations, hasSize(7));
     }
 
     @Test(expected = SessionNotFoundException.class)
     public void updateSession_unknownIdPassed_throwException() {
-        updateSessionUseCase.updateSession("cd4c770a-e53c-4d19-8393-3b37ec811b66", session);
+        updateSessionUseCase.updateSession("cd4c770a-e53c-4d19-8393-3b37ec811b66", modifiedSession);
     }
 
     @Test
     public void updateSession_invalidModifiedSessionPassed_throwException() throws Exception {
-        Session session = SessionMother.validSession()
+        UpdateSession session = UpdateSessionMother.validSession()
                 .version(-1)
                 .name("A")
                 .description("two words")
@@ -119,7 +125,7 @@ public class UpdateSessionUseCaseTest {
                 .presenter("user/name")
                 .build();
 
-        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, Session.class);
+        Method method = UpdateSessionUseCase.class.getMethod("updateSession", String.class, UpdateSession.class);
         Object[] parameters = new Object[]{SESSION_ID, session};
 
         violations = validationResource.executableValidator.validateParameters(updateSessionUseCase,
@@ -131,7 +137,7 @@ public class UpdateSessionUseCaseTest {
     @Test
     public void updateSession_validModifiedSessionPassed_returnUpdatedSession() throws Exception {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Session> sessionArgumentCaptor = ArgumentCaptor.forClass(Session.class);
+        ArgumentCaptor<UpdateSession> sessionArgumentCaptor = ArgumentCaptor.forClass(UpdateSession.class);
 
         Session updatedSession = updateSessionUseCase.updateSession(SESSION_ID, modifiedSession);
 

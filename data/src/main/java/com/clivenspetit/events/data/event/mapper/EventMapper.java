@@ -20,8 +20,8 @@ import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.clivenspetit.events.domain.event.UpdateEvent;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -36,4 +36,19 @@ public interface EventMapper {
     Event from(EventEntity event);
 
     EventEntity from(CreateEvent event);
+
+    @Mappings({
+            @Mapping(source = "price", target = "price",
+                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE),
+            @Mapping(source = "location", target = "location",
+                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE),
+            @Mapping(target = "eventId", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "createdAt", ignore = true),
+            @Mapping(target = "deletedAt", ignore = true),
+            @Mapping(target = "updatedAt", ignore = true),
+            @Mapping(target = "active", ignore = true),
+            @Mapping(target = "sessions", ignore = true)
+    })
+    EventEntity merge(UpdateEvent source, @MappingTarget EventEntity oldEvent);
 }

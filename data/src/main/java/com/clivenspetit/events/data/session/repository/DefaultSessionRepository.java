@@ -19,6 +19,7 @@ package com.clivenspetit.events.data.session.repository;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.UpdateSession;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class DefaultSessionRepository implements SessionRepository {
      * @return The newly updated session.
      */
     @Override
-    public Session updateSession(@UUID String id, @NotNull @Valid Session session) {
+    public Session updateSession(@UUID String id, @NotNull @Valid UpdateSession session) {
         return null;
     }
 

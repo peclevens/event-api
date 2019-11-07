@@ -17,6 +17,7 @@
 package com.clivenspetit.events.usecase.session;
 
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.UpdateSession;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -37,7 +38,7 @@ public class UpdateSessionUseCase {
     }
 
     public Session updateSession(@UUID(message = "Id should be a valid v4 UUID.") String id,
-                                 @NotNull @Valid Session session) {
+                                 @NotNull @Valid UpdateSession session) {
 
         Session updatedSession = null;
 
