@@ -41,14 +41,7 @@ public interface EventMapper {
             @Mapping(source = "price", target = "price",
                     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE),
             @Mapping(source = "location", target = "location",
-                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE),
-            @Mapping(target = "eventId", ignore = true),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "createdAt", ignore = true),
-            @Mapping(target = "deletedAt", ignore = true),
-            @Mapping(target = "updatedAt", ignore = true),
-            @Mapping(target = "active", ignore = true),
-            @Mapping(target = "sessions", ignore = true)
+                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     })
     EventEntity merge(UpdateEvent source, @MappingTarget EventEntity oldEvent);
 }
