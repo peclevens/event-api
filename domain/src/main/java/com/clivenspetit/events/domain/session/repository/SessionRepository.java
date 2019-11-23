@@ -102,14 +102,16 @@ public interface SessionRepository {
     /**
      * Upvote session by id.
      *
-     * @param id The session id.
+     * @param id     The session id.
+     * @param userId The voter user id
      */
-    void upVoteSession(@UUID String id);
+    void upVoteSession(@UUID String id, @UUID String userId);
 
     /**
      * Downvote session by id.
      *
-     * @param id The session id.
+     * @param id     The session id.
+     * @param userId The voter user id
      */
-    void downVoteSession(@UUID String id);
+    void downVoteSession(@UUID String id, @UUID String userId);
 }

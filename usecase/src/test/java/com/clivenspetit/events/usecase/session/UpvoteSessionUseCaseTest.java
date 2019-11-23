@@ -40,6 +40,7 @@ import static org.mockito.Mockito.*;
 public class UpvoteSessionUseCaseTest {
 
     private static final String SESSION_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
+    private static final String USER_ID = "b41955c1-0739-4097-af65-4cf02bce6aa4";
 
     @ClassRule
     public static final ValidationResource validationResource = new ValidationResource();
@@ -66,42 +67,42 @@ public class UpvoteSessionUseCaseTest {
 
     @Test
     public void upVoteSession_nullArgumentPassed_throwException() throws Exception {
-        Method method = UpvoteSessionUseCase.class.getMethod("upVoteSession", String.class);
-        Object[] parameters = new Object[]{null};
+        Method method = UpvoteSessionUseCase.class.getMethod("upVoteSession", String.class, String.class);
+        Object[] parameters = new Object[]{null, null};
 
         violations = validationResource.executableValidator.validateParameters(upvoteSessionUseCase,
                 method, parameters);
 
-        assertThat("Null id argument should not pass.", violations, hasSize(1));
+        assertThat("Null id argument should not pass.", violations, hasSize(2));
     }
 
     @Test
     public void upVoteSession_invalidIdPassed_throwException() throws Exception {
-        Method method = UpvoteSessionUseCase.class.getMethod("upVoteSession", String.class);
-        Object[] parameters = new Object[]{"id"};
+        Method method = UpvoteSessionUseCase.class.getMethod("upVoteSession", String.class, String.class);
+        Object[] parameters = new Object[]{"id", "id"};
 
         violations = validationResource.executableValidator.validateParameters(upvoteSessionUseCase,
                 method, parameters);
 
-        assertThat("Invalid id argument should not pass.", violations, hasSize(1));
+        assertThat("Invalid id argument should not pass.", violations, hasSize(2));
     }
 
     @Test(expected = SessionNotFoundException.class)
     public void upVoteSession_unknownIdPassed_throwException() {
-        upvoteSessionUseCase.upVoteSession("909b6ea4-1975-4c5c-ac4e-11db13eea89a");
+        upvoteSessionUseCase.upVoteSession("909b6ea4-1975-4c5c-ac4e-11db13eea89a", USER_ID);
     }
 
     @Test
     public void upVoteSession_validIdPassed_return() {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        upvoteSessionUseCase.upVoteSession(SESSION_ID);
+        upvoteSessionUseCase.upVoteSession(SESSION_ID, USER_ID);
 
         verify(sessionRepository, times(1))
                 .sessionExists(argumentCaptor.capture());
 
         verify(sessionRepository, times(1))
-                .upVoteSession(argumentCaptor.capture());
+                .upVoteSession(argumentCaptor.capture(), argumentCaptor.capture());
 
         assertThat(argumentCaptor.getAllValues().get(0), is(SESSION_ID));
         assertThat(argumentCaptor.getAllValues().get(1), is(SESSION_ID));

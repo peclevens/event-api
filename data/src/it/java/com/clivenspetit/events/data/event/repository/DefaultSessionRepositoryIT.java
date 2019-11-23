@@ -19,6 +19,7 @@ package com.clivenspetit.events.data.event.repository;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
+import com.clivenspetit.events.data.user.repository.JpaUserRepository;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.*;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
@@ -65,6 +66,9 @@ public class DefaultSessionRepositoryIT {
     @Autowired
     private JpaEventRepository jpaEventRepository;
 
+    @Autowired
+    private JpaUserRepository jpaUserRepository;
+
     private SessionRepository sessionRepository;
 
     @BeforeClass
@@ -83,7 +87,7 @@ public class DefaultSessionRepositoryIT {
     @Before
     public void setUp() throws Exception {
         sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository,
-                sessionCache, SessionMapper.INSTANCE);
+                jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
     }
 
     @After

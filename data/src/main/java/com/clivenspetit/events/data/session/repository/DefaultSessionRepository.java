@@ -20,11 +20,15 @@ import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.event.repository.JpaEventRepository;
 import com.clivenspetit.events.data.session.entity.SessionEntity;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
+import com.clivenspetit.events.data.user.entity.UserEntity;
+import com.clivenspetit.events.data.user.repository.JpaUserRepository;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.UpdateSession;
+import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.domain.user.exception.UserNotFoundException;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,15 +52,17 @@ public class DefaultSessionRepository implements SessionRepository {
 
     private final JpaSessionRepository jpaSessionRepository;
     private final JpaEventRepository jpaEventRepository;
+    private final JpaUserRepository jpaUserRepository;
     private final Cache<String, Session> sessionCache;
     private final SessionMapper sessionMapper;
 
     public DefaultSessionRepository(
             JpaSessionRepository jpaSessionRepository, JpaEventRepository jpaEventRepository,
-            Cache<String, Session> sessionCache, SessionMapper sessionMapper) {
+            JpaUserRepository jpaUserRepository, Cache<String, Session> sessionCache, SessionMapper sessionMapper) {
 
         this.jpaSessionRepository = jpaSessionRepository;
         this.jpaEventRepository = jpaEventRepository;
+        this.jpaUserRepository = jpaUserRepository;
         this.sessionCache = sessionCache;
         this.sessionMapper = sessionMapper;
     }
@@ -257,20 +263,60 @@ public class DefaultSessionRepository implements SessionRepository {
     /**
      * Upvote session by id.
      *
-     * @param id The session id.
+     * @param id     The session id.
+     * @param userId The voter user id
      */
     @Override
-    public void upVoteSession(@UUID String id) {
+    public void upVoteSession(@UUID String id, @UUID String userId) {
+        logger.info("Upvote session with id: {} for user id: {}.", id, userId);
 
+        // Cache key
+        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, "*", id);
+        logger.debug("Session generated cache key {}.", cacheKey);
+
+        // Try to find user
+        UserEntity userEntity = jpaUserRepository.findByUserId(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // Try to find session
+        SessionEntity sessionEntity = jpaSessionRepository.findBySessionId(id)
+                .orElseThrow(SessionNotFoundException::new);
+
+        // Upvote session
+
+
+        // Remove session in cache
+        sessionCache.remove(cacheKey);
+        logger.debug("Remove session with id {} from cache.", id);
     }
 
     /**
      * Downvote session by id.
      *
-     * @param id The session id.
+     * @param id     The session id.
+     * @param userId The voter user id
      */
     @Override
-    public void downVoteSession(@UUID String id) {
+    public void downVoteSession(@UUID String id, @UUID String userId) {
+        logger.info("Downvote session with id: {} for user id: {}.", id, userId);
 
+        // Cache key
+        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, "*", id);
+        logger.debug("Session generated cache key {}.", cacheKey);
+
+        // Try to find user
+        UserEntity userEntity = jpaUserRepository.findByUserId(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // Try to find session
+        SessionEntity sessionEntity = jpaSessionRepository.findBySessionId(id)
+                .orElseThrow(SessionNotFoundException::new);
+
+        // Downvote session
+
+
+        // Remove session in cache
+        sessionCache.remove(cacheKey);
+        logger.debug("Remove session with id {} from cache.", id);
     }
 }

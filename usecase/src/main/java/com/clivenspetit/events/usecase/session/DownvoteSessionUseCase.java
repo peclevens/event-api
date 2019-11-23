@@ -31,11 +31,11 @@ public class DownvoteSessionUseCase {
         this.sessionRepository = sessionRepository;
     }
 
-    public void downVoteSession(@UUID(message = "Id should be a valid v4 UUID.") String id) {
+    public void downVoteSession(@UUID(message = "Id should be a valid v4 UUID.") String id, @UUID String userId) {
         // Make sure the session exists
         Boolean found = sessionRepository.sessionExists(id);
         if (found == null || found == Boolean.FALSE) throw new SessionNotFoundException();
 
-        sessionRepository.downVoteSession(id);
+        sessionRepository.downVoteSession(id, userId);
     }
 }
