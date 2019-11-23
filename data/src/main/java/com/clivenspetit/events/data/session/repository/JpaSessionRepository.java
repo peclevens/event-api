@@ -33,6 +33,10 @@ public interface JpaSessionRepository extends JpaRepository<SessionEntity, Long>
     Optional<SessionEntity> findBySessionId(String id);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE FROM SessionEntity s WHERE s.sessionId = :sessionId")
+    void deleteSessionById(@Param("sessionId") String sessionId);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "DELETE FROM SessionEntity s WHERE s.eventId = ( " +
             "SELECT e FROM EventEntity e WHERE e.eventId = :eventId)")
     void deleteAllSessionsByEventId(@Param("eventId") String eventId);

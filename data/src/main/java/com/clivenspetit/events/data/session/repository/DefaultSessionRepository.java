@@ -33,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import javax.cache.Cache;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -194,7 +195,19 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public void deleteSessionById(@UUID String id) {
+        logger.info("Delete session with id {}.", id);
 
+        // Cache key
+        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, "*", id);
+        logger.debug("Session generated cache key {}.", cacheKey);
+
+        // Delete session from storage
+        jpaSessionRepository.deleteSessionById(id);
+        logger.info("Session with id {} was deleted successfully.", id);
+
+        // Remove session in cache
+        sessionCache.remove(cacheKey);
+        logger.debug("Remove session with id {} from cache.", id);
     }
 
     /**
@@ -225,7 +238,20 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public void deleteAllSessionsByEventIds(@NotNull Set<@UUID String> eventIds) {
+        String eventIdsStr = Arrays.toString(eventIds.toArray());
+
+        logger.info("Delete all sessions for event with ids {}.", eventIdsStr);
+
+        // Cache key
+        String cacheKey = String.format(SESSION_BASE_CACHE_KEY_TPL, eventIdsStr); // TODO Manage ids in cache
+        logger.debug("Sessions generated pattern cache key: {}.", cacheKey);
+
         jpaSessionRepository.deleteAllSessionsByEventIds(eventIds);
+        logger.info("All sessions with event ids {} were deleted successfully.", eventIdsStr);
+
+        // Remove all sessions matching the event ids from cache
+        sessionCache.remove(eventIdsStr); // TODO Manage ids in cache
+        logger.info("Remove all sessions matching the event ids {} from cache.", eventIdsStr);
     }
 
     /**

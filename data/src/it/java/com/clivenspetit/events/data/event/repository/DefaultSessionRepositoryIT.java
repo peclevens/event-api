@@ -20,10 +20,6 @@ import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.domain.common.Level;
-import com.clivenspetit.events.domain.common.LocationMother;
-import com.clivenspetit.events.domain.event.Event;
-import com.clivenspetit.events.domain.event.UpdateEvent;
-import com.clivenspetit.events.domain.event.UpdateEventMother;
 import com.clivenspetit.events.domain.session.*;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import org.junit.*;
@@ -193,5 +189,45 @@ public class DefaultSessionRepositoryIT {
         assertThat(session.getName(), is(sessionName));
         assertThat(session.getLevel(), is(Level.BEGINNER));
         assertThat(session.getPresenter(), is("John Doe"));
+    }
+
+    @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void deleteSessionById_validSessionIdPassed_completed() {
+        // Delete session
+        sessionRepository.deleteSessionById(SESSION_ID);
+
+        assertThat(jpaSessionRepository.count(), is(0L));
+    }
+
+    @Test
+    @Sql("classpath:db/sample/create-event.sql")
+    public void deleteSessionById_invalidSessionIdPassed_completed() {
+        // Delete session
+        sessionRepository.deleteSessionById(UUID.randomUUID().toString());
+
+        // Process new count
+        assertThat(jpaSessionRepository.count(), is(0L));
+    }
+
+    @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void deleteAllSessionsByEventId_validIdPassed_completed() {
+        // Process old count
+        assertThat(jpaSessionRepository.count(), is(1L));
+
+        // Delete session
+        sessionRepository.deleteAllSessionsByEventId(EVENT_ID);
+
+        // Process new count
+        assertThat(jpaSessionRepository.count(), is(0L));
     }
 }
