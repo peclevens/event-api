@@ -16,7 +16,11 @@
 
 package com.clivenspetit.events.data.session.repository;
 
+import com.clivenspetit.events.data.event.entity.EventEntity;
+import com.clivenspetit.events.data.event.repository.JpaEventRepository;
+import com.clivenspetit.events.data.session.entity.SessionEntity;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
+import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.UpdateSession;
@@ -39,17 +43,19 @@ public class DefaultSessionRepository implements SessionRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionRepository.class);
     public static final String SESSION_BASE_CACHE_KEY_TPL = "event:%s:*";
-    public static final String SESSION_CACHE_KEY_TPL = "event:%s:session:%s";
+    public static final String SESSION_CACHE_KEY_TPL = "event:%s:session:%s"; // TODO Refactor session cache keys
 
     private final JpaSessionRepository jpaSessionRepository;
+    private final JpaEventRepository jpaEventRepository;
     private final Cache<String, Session> sessionCache;
     private final SessionMapper sessionMapper;
 
     public DefaultSessionRepository(
-            JpaSessionRepository jpaSessionRepository, Cache<String, Session> sessionCache,
-            SessionMapper sessionMapper) {
+            JpaSessionRepository jpaSessionRepository, JpaEventRepository jpaEventRepository,
+            Cache<String, Session> sessionCache, SessionMapper sessionMapper) {
 
         this.jpaSessionRepository = jpaSessionRepository;
+        this.jpaEventRepository = jpaEventRepository;
         this.sessionCache = sessionCache;
         this.sessionMapper = sessionMapper;
     }
@@ -65,7 +71,7 @@ public class DefaultSessionRepository implements SessionRepository {
         logger.info("Search session with id {}.", id);
 
         // Cache key
-        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, id);
+        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, "*", id);
 
         // Find session in cache
         Session cacheSession = sessionCache.get(cacheKey);
@@ -114,18 +120,36 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public Boolean sessionExists(@UUID String id) {
-        return null;
+        return this.getSessionById(id) != null;
     }
 
     /**
      * Create new session.
      *
+     * @param eventId The event id.
      * @param session Session creation object to store to a datasource.
      * @return The newly created session id.
      */
     @Override
-    public String createSession(@NotNull @Valid CreateSession session) {
-        return null;
+    public String createSession(@UUID String eventId, @NotNull @Valid CreateSession session) {
+        logger.info("Create session with title: {}", session.getName());
+
+        // Parent event
+        EventEntity eventEntity = jpaEventRepository.findByEventId(eventId)
+                .orElseThrow(EventNotFoundException::new);
+        eventEntity.setEventId(eventId);
+
+        // Map object to entity
+        SessionEntity sessionEntity = sessionMapper.from(session);
+        sessionEntity.setEventId(eventEntity);
+
+        // Save the session
+        sessionEntity = jpaSessionRepository.save(sessionEntity);
+
+        logger.info("Session with title: {} was created successfully with id: {}",
+                session.getName(), sessionEntity.getSessionId());
+
+        return sessionEntity.getSessionId();
     }
 
     /**
@@ -137,7 +161,30 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public Session updateSession(@UUID String id, @NotNull @Valid UpdateSession session) {
-        return null;
+        logger.info("Update session with id: {}.", id);
+
+        // Cache key
+        String cacheKey = String.format(SESSION_CACHE_KEY_TPL, "*", id);
+        logger.debug("Session generated cache key {}.", cacheKey);
+
+        // Find old session
+        SessionEntity oldSession = jpaSessionRepository.findBySessionId(id).orElse(null);
+
+        // Merge sessions
+        SessionEntity mergeSession = sessionMapper.merge(session, oldSession);
+
+        // Update the session
+        SessionEntity sessionEntity = jpaSessionRepository.save(mergeSession);
+
+        Session updatedSession = sessionMapper.from(sessionEntity);
+        logger.info("Session with id: {} was updated successfully. The new title is {}.",
+                updatedSession.getId(), updatedSession.getName());
+
+        // Remove session in cache
+        sessionCache.remove(cacheKey);
+        logger.debug("Remove session with id {} from cache.", id);
+
+        return updatedSession;
     }
 
     /**

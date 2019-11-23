@@ -18,6 +18,7 @@ package com.clivenspetit.events.usecase.session;
 
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.domain.validation.constraints.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ public class CreateSessionUseCase {
         this.sessionRepository = sessionRepository;
     }
 
-    public String createSession(@NotNull @Valid CreateSession session) {
-        return sessionRepository.createSession(session);
+    public String createSession(@UUID String eventId, @NotNull @Valid CreateSession session) {
+        return sessionRepository.createSession(eventId, session);
     }
 }

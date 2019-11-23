@@ -17,9 +17,12 @@
 package com.clivenspetit.events.data.session.mapper;
 
 import com.clivenspetit.events.data.session.entity.SessionEntity;
+import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
+import com.clivenspetit.events.domain.session.UpdateSession;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -32,4 +35,8 @@ public interface SessionMapper {
 
     @Mapping(source = "sessionId", target = "id")
     Session from(SessionEntity session);
+
+    SessionEntity from(CreateSession session);
+
+    SessionEntity merge(UpdateSession session, @MappingTarget SessionEntity oldSession);
 }

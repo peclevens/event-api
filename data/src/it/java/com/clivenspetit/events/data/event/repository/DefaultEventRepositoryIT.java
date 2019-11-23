@@ -89,7 +89,7 @@ public class DefaultEventRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, sessionCache, SessionMapper.INSTANCE);
+        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository, sessionCache, SessionMapper.INSTANCE);
 
         eventRepository = new DefaultEventRepository(jpaEventRepository, sessionRepository, eventCache,
                 EventMapper.INSTANCE);
@@ -98,6 +98,7 @@ public class DefaultEventRepositoryIT {
     @After
     public void tearDown() throws Exception {
         eventRepository = null;
+        sessionCache.clear();
         eventCache.clear();
     }
 

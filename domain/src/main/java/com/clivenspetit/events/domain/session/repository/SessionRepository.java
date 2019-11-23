@@ -63,10 +63,11 @@ public interface SessionRepository {
     /**
      * Create new session.
      *
+     * @param eventId The event id
      * @param session Session creation object to store to a datasource.
      * @return The newly created session id.
      */
-    String createSession(@NotNull @Valid CreateSession session);
+    String createSession(@UUID String eventId, @NotNull @Valid CreateSession session);
 
     /**
      * Update existing session.

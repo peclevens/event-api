@@ -57,7 +57,7 @@ public class CreateSessionUseCaseTest {
 
         session = CreateSessionMother.validSession().build();
 
-        when(sessionRepository.createSession(session))
+        when(sessionRepository.createSession(NEW_SESSION_ID, session))
                 .thenReturn(NEW_SESSION_ID);
     }
 
@@ -71,23 +71,24 @@ public class CreateSessionUseCaseTest {
 
     @Test
     public void createSession_nullArgumentPassed_throwException() throws Exception {
-        Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
-        Object[] parameters = new Object[]{null};
+        Method method = CreateSessionUseCase.class.getMethod("createSession", String.class, CreateSession.class);
+        Object[] parameters = new Object[]{null, null};
 
         violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
                 method, parameters);
 
-        assertThat(violations.size(), is(1));
+        assertThat(violations.size(), is(2));
     }
 
     @Test
     public void createSession_validSessionPassed_returnNewSessionId() throws Exception {
-        ArgumentCaptor<CreateSession> argumentCaptor = ArgumentCaptor.forClass(CreateSession.class);
+        ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<CreateSession> createSessionArgumentCaptor = ArgumentCaptor.forClass(CreateSession.class);
 
-        String id = createSessionUseCase.createSession(session);
+        String id = createSessionUseCase.createSession(NEW_SESSION_ID, session);
 
         verify(sessionRepository, times(1))
-                .createSession(argumentCaptor.capture());
+                .createSession(idArgumentCaptor.capture(), createSessionArgumentCaptor.capture());
 
         assertThat(id, is(NEW_SESSION_ID));
     }
@@ -96,8 +97,8 @@ public class CreateSessionUseCaseTest {
     public void createSession_invalidSessionPassed_throwException() throws Exception {
         CreateSession session = CreateSessionMother.invalidSession().build();
 
-        Method method = CreateSessionUseCase.class.getMethod("createSession", CreateSession.class);
-        Object[] parameters = new Object[]{session};
+        Method method = CreateSessionUseCase.class.getMethod("createSession", String.class, CreateSession.class);
+        Object[] parameters = new Object[]{NEW_SESSION_ID, session};
 
         violations = validationResource.executableValidator.validateParameters(createSessionUseCase,
                 method, parameters);
