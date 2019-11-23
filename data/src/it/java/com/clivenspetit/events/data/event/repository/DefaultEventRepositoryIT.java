@@ -82,8 +82,8 @@ public class DefaultEventRepositoryIT {
         CachingProvider cachingProvider = Caching.getCachingProvider();
         cacheManager = cachingProvider.getCacheManager();
 
-        eventCache = cacheManager.createCache("eventCache", eventMutableConfiguration);
-        sessionCache = cacheManager.createCache("sessionCache", sessionMutableConfiguration);
+        eventCache = cacheManager.createCache("eventCache1", eventMutableConfiguration);
+        sessionCache = cacheManager.createCache("sessionCache1", sessionMutableConfiguration);
     }
 
     @AfterClass

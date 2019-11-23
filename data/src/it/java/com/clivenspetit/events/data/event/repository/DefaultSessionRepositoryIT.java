@@ -76,7 +76,7 @@ public class DefaultSessionRepositoryIT {
         CachingProvider cachingProvider = Caching.getCachingProvider();
         cacheManager = cachingProvider.getCacheManager();
 
-        sessionCache = cacheManager.createCache("sessionCache", sessionMutableConfiguration);
+        sessionCache = cacheManager.createCache("sessionCache2", sessionMutableConfiguration);
     }
 
     @AfterClass
