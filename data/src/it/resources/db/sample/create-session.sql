@@ -9,10 +9,10 @@ INSERT INTO `events`.`session`
 `level`,
 `duration`,
 `presenter`,
-`voters`,
 `created_at`,
+`created_by`,
 `updated_at`,
-`deleted_at`,
+`updated_by`,
 `active`)
 VALUES
 (1,
@@ -24,8 +24,8 @@ VALUES
 'BEGINNER',
 '01:00:00',
 'John Doe',
-'["johnpapa", "bradgreen"]',
 '2020-06-15T08:30:00.009',
+1,
 NULL,
 NULL,
 1);
