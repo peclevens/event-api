@@ -16,17 +16,20 @@
 
 package com.clivenspetit.events.data.event.repository;
 
+import com.clivenspetit.events.data.StubContext;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.data.user.repository.JpaUserRepository;
+import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.LocationMother;
 import com.clivenspetit.events.domain.event.*;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +67,7 @@ public class DefaultEventRepositoryIT {
     private static MutableConfiguration<String, Session> sessionMutableConfiguration = new MutableConfiguration<>();
     private static Cache<String, Event> eventCache;
     private static Cache<String, Session> sessionCache;
+    private static final Context context = new StubContext();
 
     @Autowired
     private JpaEventRepository jpaEventRepository;
@@ -93,10 +97,11 @@ public class DefaultEventRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository, jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
+        sessionRepository = new DefaultSessionRepository(context, jpaSessionRepository, jpaEventRepository,
+                jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
 
-        eventRepository = new DefaultEventRepository(jpaEventRepository, sessionRepository, eventCache,
-                EventMapper.INSTANCE);
+        eventRepository = new DefaultEventRepository(context, jpaEventRepository, sessionRepository,
+                jpaUserRepository, eventCache, EventMapper.INSTANCE);
     }
 
     @After
@@ -135,7 +140,7 @@ public class DefaultEventRepositoryIT {
         assertThat(session.getName(), is("Using Angular 4 Pipes"));
         assertThat(session.getLevel(), is(Level.BEGINNER));
         assertThat(session.getPresenter(), is("John Doe"));
-        assertThat(session.getVoters(), hasItems("johnpapa", "bradgreen"));
+        assertThat(session.getVoters(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -168,6 +173,7 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
+    @Sql("classpath:db/sample/create-user.sql")
     public void createEvent_eventWithSessionWithLocationAndOnlineUrl_returnNewEventId() {
         CreateEvent createEvent = CreateEventMother.validEvent().build();
 
@@ -193,6 +199,7 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
+    @Sql("classpath:db/sample/create-user.sql")
     public void createEvent_eventWithLocation_returnNewEventId() {
         CreateEvent createEvent = CreateEventMother.validEvent()
                 .onlineUrl(null)
@@ -220,6 +227,7 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
+    @Sql("classpath:db/sample/create-user.sql")
     public void createEvent_eventWithOnlineUrl_returnNewEventId() {
         CreateEvent createEvent = CreateEventMother.validEvent()
                 .location(null)
@@ -246,6 +254,7 @@ public class DefaultEventRepositoryIT {
 
     @Test
     @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
             @Sql("classpath:db/sample/create-event.sql"),
             @Sql("classpath:db/sample/create-location.sql"),
             @Sql("classpath:db/sample/create-session.sql")
@@ -275,7 +284,10 @@ public class DefaultEventRepositoryIT {
     }
 
     @Test
-    @Sql("classpath:db/sample/create-event.sql")
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
+            @Sql("classpath:db/sample/create-event.sql")
+    })
     public void updateEvent_updateEventNameAndAddNewLocation_returnUpdatedEvent() {
         String eventName = "New event name";
         String locationCity = "New location city";

@@ -20,20 +20,22 @@ import com.clivenspetit.events.data.session.entity.SessionEntity;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
 import com.clivenspetit.events.domain.session.UpdateSession;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
  * @author Clivens Petit
  */
 @Mapper
+@DecoratedWith(SessionMapperDecorator.class)
 public interface SessionMapper {
 
     SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
-    @Mapping(source = "sessionId", target = "id")
+    @Mappings({
+            @Mapping(source = "sessionId", target = "id"),
+            @Mapping(target = "voters", ignore = true)
+    })
     Session from(SessionEntity session);
 
     SessionEntity from(CreateSession session);

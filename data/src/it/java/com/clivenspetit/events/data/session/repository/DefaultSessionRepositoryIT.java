@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.clivenspetit.events.data.event.repository;
+package com.clivenspetit.events.data.session.repository;
 
+import com.clivenspetit.events.data.StubContext;
+import com.clivenspetit.events.data.event.repository.JpaEventRepository;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
-import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
-import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.data.user.repository.JpaUserRepository;
+import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.session.*;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,7 @@ public class DefaultSessionRepositoryIT {
     private static CacheManager cacheManager;
     private static MutableConfiguration<String, Session> sessionMutableConfiguration = new MutableConfiguration<>();
     private static Cache<String, Session> sessionCache;
+    private static final Context context = new StubContext();
 
     @Autowired
     private JpaSessionRepository jpaSessionRepository;
@@ -86,7 +89,7 @@ public class DefaultSessionRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository,
+        sessionRepository = new DefaultSessionRepository(context, jpaSessionRepository, jpaEventRepository,
                 jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
     }
 
@@ -119,7 +122,7 @@ public class DefaultSessionRepositoryIT {
         assertThat(session.getName(), is("Using Angular 4 Pipes"));
         assertThat(session.getLevel(), is(Level.BEGINNER));
         assertThat(session.getPresenter(), is("John Doe"));
-        assertThat(session.getVoters(), hasItems("johnpapa", "bradgreen"));
+        assertThat(session.getVoters(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -152,6 +155,7 @@ public class DefaultSessionRepositoryIT {
 
     @Test
     @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
             @Sql("classpath:db/sample/create-event.sql"),
             @Sql("classpath:db/sample/create-location.sql")
     })
@@ -175,6 +179,7 @@ public class DefaultSessionRepositoryIT {
 
     @Test
     @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
             @Sql("classpath:db/sample/create-event.sql"),
             @Sql("classpath:db/sample/create-location.sql"),
             @Sql("classpath:db/sample/create-session.sql")

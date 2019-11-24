@@ -18,11 +18,17 @@ package com.clivenspetit.events.data.event.repository;
 
 import com.clivenspetit.events.data.event.entity.EventEntity;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
+import com.clivenspetit.events.data.session.entity.SessionEntity;
+import com.clivenspetit.events.data.user.entity.UserEntity;
+import com.clivenspetit.events.data.user.repository.JpaUserRepository;
+import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.event.CreateEvent;
 import com.clivenspetit.events.domain.event.Event;
 import com.clivenspetit.events.domain.event.UpdateEvent;
 import com.clivenspetit.events.domain.event.repository.EventRepository;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
+import com.clivenspetit.events.domain.user.exception.UserNotFoundException;
+import com.clivenspetit.events.domain.user.login.exception.InvalidLoggedInUserException;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,17 +50,21 @@ public class DefaultEventRepository implements EventRepository {
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventRepository.class);
     public static final String EVENT_CACHE_KEY_TPL = "event:%s";
 
+    private final Context context;
     private final JpaEventRepository jpaEventRepository;
     private final SessionRepository sessionRepository;
+    private final JpaUserRepository jpaUserRepository;
     private final Cache<String, Event> eventCache;
     private final EventMapper eventMapper;
 
     public DefaultEventRepository(
-            JpaEventRepository jpaEventRepository, SessionRepository sessionRepository,
-            Cache<String, Event> eventCache, EventMapper eventMapper) {
+            Context context, JpaEventRepository jpaEventRepository, SessionRepository sessionRepository,
+            JpaUserRepository jpaUserRepository, Cache<String, Event> eventCache, EventMapper eventMapper) {
 
+        this.context = context;
         this.jpaEventRepository = jpaEventRepository;
         this.sessionRepository = sessionRepository;
+        this.jpaUserRepository = jpaUserRepository;
         this.eventCache = eventCache;
         this.eventMapper = eventMapper;
     }
@@ -129,10 +139,24 @@ public class DefaultEventRepository implements EventRepository {
      */
     @Override
     public String createEvent(@NotNull @Valid CreateEvent event) {
+        // Get the logged in user id
+        String userId = context.getLoggedUser().orElseThrow(InvalidLoggedInUserException::new).getId();
+
+        // Find the user entity
+        UserEntity userEntity = jpaUserRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+
         logger.info("Create event with title: {}", event.getName());
 
         // Map object to entity
         EventEntity eventEntity = eventMapper.from(event);
+        eventEntity.setCreatedBy(userEntity);
+
+        // Set created user for session
+        // TODO This a temporary solutions, implement JPA Audit later
+        Set<SessionEntity> sessions = eventEntity.getSessions();
+        if (sessions != null && !sessions.isEmpty()) {
+            sessions.forEach(sessionEntity -> sessionEntity.setCreatedBy(userEntity));
+        }
 
         // Save the event
         eventEntity = jpaEventRepository.save(eventEntity);
@@ -152,6 +176,12 @@ public class DefaultEventRepository implements EventRepository {
      */
     @Override
     public Event updateEvent(@UUID String id, @NotNull @Valid UpdateEvent event) {
+        // Get the logged in user id
+        String userId = context.getLoggedUser().orElseThrow(InvalidLoggedInUserException::new).getId();
+
+        // Find the user entity
+        UserEntity userEntity = jpaUserRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+
         logger.info("Update event with id: {}.", id);
 
         // Cache key
@@ -163,6 +193,14 @@ public class DefaultEventRepository implements EventRepository {
 
         // Merge events
         EventEntity mergeEvent = eventMapper.merge(event, oldEvent);
+        mergeEvent.setUpdatedBy(userEntity);
+
+        // Set created user for session
+        // TODO This a temporary solutions, implement JPA Audit later
+        Set<SessionEntity> sessions = mergeEvent.getSessions();
+        if (sessions != null && !sessions.isEmpty()) {
+            sessions.forEach(sessionEntity -> sessionEntity.setUpdatedBy(userEntity));
+        }
 
         // Update the event
         EventEntity eventEntity = jpaEventRepository.save(mergeEvent);
