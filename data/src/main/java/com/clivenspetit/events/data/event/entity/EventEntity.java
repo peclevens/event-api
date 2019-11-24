@@ -18,6 +18,7 @@ package com.clivenspetit.events.data.event.entity;
 
 import com.clivenspetit.events.data.common.entity.LocationEntity;
 import com.clivenspetit.events.data.session.entity.SessionEntity;
+import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Url;
 
@@ -121,16 +122,24 @@ public class EventEntity implements Serializable {
     private LocalDateTime createdAt;
 
     /**
+     * Event created user
+     */
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
+
+    /**
      * Event last updated datetime
      */
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     /**
-     * Event deleted datetime
+     * Event updated user
      */
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by", nullable = false)
+    private UserEntity updatedBy;
 
     /**
      * Event active status
@@ -232,6 +241,14 @@ public class EventEntity implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public UserEntity getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -240,12 +257,12 @@ public class EventEntity implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
+    public UserEntity getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void setUpdatedBy(UserEntity updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Boolean isActive() {

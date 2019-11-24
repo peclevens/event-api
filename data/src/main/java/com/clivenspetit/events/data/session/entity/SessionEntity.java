@@ -17,16 +17,11 @@
 package com.clivenspetit.events.data.session.entity;
 
 import com.clivenspetit.events.data.event.entity.EventEntity;
+import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.domain.common.Level;
-import com.clivenspetit.events.domain.validation.constraints.IterableOfStringPattern;
 import com.clivenspetit.events.domain.validation.constraints.Name;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Word;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -44,8 +39,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "session")
-@TypeDefs({@TypeDef(name = "json", typeClass = JsonStringType.class),
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 public class SessionEntity implements Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -121,11 +114,9 @@ public class SessionEntity implements Serializable {
      * List of voters.
      */
     @Valid
-    @IterableOfStringPattern(regexp = "^[a-z0-9_.-]+$",
-            message = "Voter user names should contain only characters from a-z, 0-9 and symbols . _")
-    @Type(type = "json")
-    @Column(name = "voters", columnDefinition = "json")
-    private Set<String> voters;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "id.sessionId")
+    @Column(name = "voters")
+    private Set<SessionVote> voters;
 
     /**
      * Session created datetime
@@ -134,16 +125,24 @@ public class SessionEntity implements Serializable {
     private LocalDateTime createdAt;
 
     /**
+     * Event created user
+     */
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
+
+    /**
      * Session last updated datetime
      */
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     /**
-     * Session deleted datetime
+     * Event updated user
      */
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by", nullable = false)
+    private UserEntity updatedBy;
 
     /**
      * Session active status
@@ -223,11 +222,11 @@ public class SessionEntity implements Serializable {
         this.presenter = presenter;
     }
 
-    public Set<String> getVoters() {
+    public Set<SessionVote> getVoters() {
         return voters;
     }
 
-    public void setVoters(Set<String> voters) {
+    public void setVoters(Set<SessionVote> voters) {
         this.voters = voters;
     }
 
@@ -239,6 +238,14 @@ public class SessionEntity implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public UserEntity getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -247,12 +254,12 @@ public class SessionEntity implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
+    public UserEntity getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void setUpdatedBy(UserEntity updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Boolean isActive() {

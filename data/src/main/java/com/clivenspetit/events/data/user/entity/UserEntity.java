@@ -68,13 +68,25 @@ public class UserEntity implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    /**
+     * User email address
+     */
     @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    /**
+     * User password
+     */
     @Password
     @Column(name = "password", nullable = false)
     private String password;
+
+    /**
+     * User enabled status
+     */
+    @Column(name = "enabled")
+    private Boolean enabled = Boolean.TRUE;
 
     public Long getId() {
         return id;
@@ -122,6 +134,14 @@ public class UserEntity implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean isEnabled() {
+        return enabled != null ? enabled : Boolean.FALSE;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @PrePersist
