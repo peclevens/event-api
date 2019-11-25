@@ -16,13 +16,11 @@
 
 package com.clivenspetit.events.data.event.repository;
 
-import com.clivenspetit.events.data.StubContext;
 import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
 import com.clivenspetit.events.data.user.repository.JpaUserRepository;
-import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.LocationMother;
 import com.clivenspetit.events.domain.event.*;
@@ -67,7 +65,6 @@ public class DefaultEventRepositoryIT {
     private static MutableConfiguration<String, Session> sessionMutableConfiguration = new MutableConfiguration<>();
     private static Cache<String, Event> eventCache;
     private static Cache<String, Session> sessionCache;
-    private static final Context context = new StubContext();
 
     @Autowired
     private JpaEventRepository jpaEventRepository;
@@ -97,11 +94,11 @@ public class DefaultEventRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
-        sessionRepository = new DefaultSessionRepository(context, jpaSessionRepository, jpaEventRepository,
+        sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository,
                 jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
 
-        eventRepository = new DefaultEventRepository(context, jpaEventRepository, sessionRepository,
-                jpaUserRepository, eventCache, EventMapper.INSTANCE);
+        eventRepository = new DefaultEventRepository(jpaEventRepository, sessionRepository,
+                eventCache, EventMapper.INSTANCE);
     }
 
     @After

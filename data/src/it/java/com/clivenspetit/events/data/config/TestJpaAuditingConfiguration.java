@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package com.clivenspetit.events.data;
+package com.clivenspetit.events.data.config;
 
-import com.clivenspetit.events.data.config.TestJpaAuditingConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import javax.annotation.PostConstruct;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Optional;
 
 /**
  * @author Clivens Petit
  */
-@SpringBootApplication
-@Import(TestJpaAuditingConfiguration.class)
-public class ApplicationTests {
+@TestConfiguration
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+public class TestJpaAuditingConfiguration {
 
-    @PostConstruct
-    public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-        Locale.setDefault(Locale.US);
+    @Bean
+    public AuditorAware<Long> auditorProvider() {
+        return () -> Optional.of(1L);
     }
 }

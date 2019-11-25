@@ -16,8 +16,8 @@
 
 package com.clivenspetit.events.data.session.entity;
 
+import com.clivenspetit.events.data.common.entity.AbstractAuditor;
 import com.clivenspetit.events.data.event.entity.EventEntity;
-import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.validation.constraints.Name;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
@@ -30,7 +30,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -39,7 +38,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "session")
-public class SessionEntity implements Serializable {
+public class SessionEntity extends AbstractAuditor<Long> implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -117,32 +116,6 @@ public class SessionEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "id.sessionId")
     @Column(name = "voters")
     private Set<SessionVote> voters;
-
-    /**
-     * Session created datetime
-     */
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    /**
-     * Event created user
-     */
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private UserEntity createdBy;
-
-    /**
-     * Session last updated datetime
-     */
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    /**
-     * Event updated user
-     */
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by", nullable = false)
-    private UserEntity updatedBy;
 
     /**
      * Session active status
@@ -230,38 +203,6 @@ public class SessionEntity implements Serializable {
         this.voters = voters;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public UserEntity getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(UserEntity createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public UserEntity getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(UserEntity updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public Boolean isActive() {
         return active != null ? active : Boolean.TRUE;
     }
@@ -273,11 +214,5 @@ public class SessionEntity implements Serializable {
     @PrePersist
     public void prePersist() {
         sessionId = java.util.UUID.randomUUID().toString();
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

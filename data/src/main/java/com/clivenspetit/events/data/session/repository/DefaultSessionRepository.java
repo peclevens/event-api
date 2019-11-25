@@ -22,7 +22,6 @@ import com.clivenspetit.events.data.session.entity.SessionEntity;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.data.user.repository.JpaUserRepository;
-import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.event.exception.EventNotFoundException;
 import com.clivenspetit.events.domain.session.CreateSession;
 import com.clivenspetit.events.domain.session.Session;
@@ -30,7 +29,6 @@ import com.clivenspetit.events.domain.session.UpdateSession;
 import com.clivenspetit.events.domain.session.exception.SessionNotFoundException;
 import com.clivenspetit.events.domain.session.repository.SessionRepository;
 import com.clivenspetit.events.domain.user.exception.UserNotFoundException;
-import com.clivenspetit.events.domain.user.login.exception.InvalidLoggedInUserException;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +50,6 @@ public class DefaultSessionRepository implements SessionRepository {
     public static final String SESSION_BASE_CACHE_KEY_TPL = "event:%s:*";
     public static final String SESSION_CACHE_KEY_TPL = "event:%s:session:%s"; // TODO Refactor session cache keys
 
-    private final Context context;
     private final JpaSessionRepository jpaSessionRepository;
     private final JpaEventRepository jpaEventRepository;
     private final JpaUserRepository jpaUserRepository;
@@ -60,10 +57,9 @@ public class DefaultSessionRepository implements SessionRepository {
     private final SessionMapper sessionMapper;
 
     public DefaultSessionRepository(
-            Context context, JpaSessionRepository jpaSessionRepository, JpaEventRepository jpaEventRepository,
+            JpaSessionRepository jpaSessionRepository, JpaEventRepository jpaEventRepository,
             JpaUserRepository jpaUserRepository, Cache<String, Session> sessionCache, SessionMapper sessionMapper) {
 
-        this.context = context;
         this.jpaSessionRepository = jpaSessionRepository;
         this.jpaEventRepository = jpaEventRepository;
         this.jpaUserRepository = jpaUserRepository;
@@ -143,12 +139,6 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public String createSession(@UUID String eventId, @NotNull @Valid CreateSession session) {
-        // Get the logged in user id
-        String userId = context.getLoggedUser().orElseThrow(InvalidLoggedInUserException::new).getId();
-
-        // Find the user entity
-        UserEntity userEntity = jpaUserRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-
         logger.info("Create session with title: {}", session.getName());
 
         // Parent event
@@ -159,7 +149,6 @@ public class DefaultSessionRepository implements SessionRepository {
         // Map object to entity
         SessionEntity sessionEntity = sessionMapper.from(session);
         sessionEntity.setEventId(eventEntity);
-        sessionEntity.setCreatedBy(userEntity);
 
         // Save the session
         sessionEntity = jpaSessionRepository.save(sessionEntity);
@@ -179,12 +168,6 @@ public class DefaultSessionRepository implements SessionRepository {
      */
     @Override
     public Session updateSession(@UUID String id, @NotNull @Valid UpdateSession session) {
-        // Get the logged in user id
-        String userId = context.getLoggedUser().orElseThrow(InvalidLoggedInUserException::new).getId();
-
-        // Find the user entity
-        UserEntity userEntity = jpaUserRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-
         logger.info("Update session with id: {}.", id);
 
         // Cache key
@@ -196,7 +179,6 @@ public class DefaultSessionRepository implements SessionRepository {
 
         // Merge sessions
         SessionEntity mergeSession = sessionMapper.merge(session, oldSession);
-        mergeSession.setUpdatedBy(userEntity);
 
         // Update the session
         SessionEntity sessionEntity = jpaSessionRepository.save(mergeSession);

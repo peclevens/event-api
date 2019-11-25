@@ -16,9 +16,9 @@
 
 package com.clivenspetit.events.data.event.entity;
 
+import com.clivenspetit.events.data.common.entity.AbstractAuditor;
 import com.clivenspetit.events.data.common.entity.LocationEntity;
 import com.clivenspetit.events.data.session.entity.SessionEntity;
-import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.domain.validation.constraints.UUID;
 import com.clivenspetit.events.domain.validation.constraints.Url;
 
@@ -35,7 +35,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "event")
-public class EventEntity implements Serializable {
+public class EventEntity extends AbstractAuditor<Long> implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -114,32 +114,6 @@ public class EventEntity implements Serializable {
     @Valid
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
     private Set<SessionEntity> sessions;
-
-    /**
-     * Event created datetime
-     */
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    /**
-     * Event created user
-     */
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private UserEntity createdBy;
-
-    /**
-     * Event last updated datetime
-     */
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    /**
-     * Event updated user
-     */
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by", nullable = false)
-    private UserEntity updatedBy;
 
     /**
      * Event active status
@@ -233,38 +207,6 @@ public class EventEntity implements Serializable {
         this.sessions = sessions;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public UserEntity getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(UserEntity createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public UserEntity getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(UserEntity updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public Boolean isActive() {
         return active != null ? active : Boolean.TRUE;
     }
@@ -276,11 +218,5 @@ public class EventEntity implements Serializable {
     @PrePersist
     public void prePersist() {
         eventId = java.util.UUID.randomUUID().toString();
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }
