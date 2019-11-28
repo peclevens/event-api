@@ -55,6 +55,7 @@ public class DefaultSessionRepositoryIT {
 
     private static final String EVENT_ID = "eb3a377c-3742-43ac-8d87-35534de2db8f";
     private static final String SESSION_ID = "f50425ee-dca3-4ada-93cc-09993db07311";
+    private static final String USER_ID = "2cb4601f-bd11-4d01-98f5-b8a249e2b0ed";
 
     private static CacheManager cacheManager;
     private static MutableConfiguration<String, Session> sessionMutableConfiguration = new MutableConfiguration<>();
@@ -68,6 +69,9 @@ public class DefaultSessionRepositoryIT {
 
     @Autowired
     private JpaUserRepository jpaUserRepository;
+
+    @Autowired
+    private JpaSessionVoteRepository jpaSessionVoteRepository;
 
     private SessionRepository sessionRepository;
 
@@ -87,7 +91,7 @@ public class DefaultSessionRepositoryIT {
     @Before
     public void setUp() throws Exception {
         sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository,
-                jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
+                jpaUserRepository, jpaSessionVoteRepository, sessionCache, SessionMapper.INSTANCE);
     }
 
     @After
@@ -235,5 +239,47 @@ public class DefaultSessionRepositoryIT {
 
         // Process new count
         assertThat(jpaSessionRepository.count(), is(0L));
+    }
+
+    @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void upVoteSession_validSessionIdPassed_completed() {
+        // Process old count
+        assertThat(jpaSessionVoteRepository.count(), is(0L));
+
+        // Upvote session
+        sessionRepository.upVoteSession(SESSION_ID, USER_ID);
+
+        // Process new count
+        assertThat(jpaSessionVoteRepository.count(), is(1L));
+    }
+
+    @Test
+    @SqlGroup({
+            @Sql("classpath:db/sample/create-user.sql"),
+            @Sql("classpath:db/sample/create-event.sql"),
+            @Sql("classpath:db/sample/create-location.sql"),
+            @Sql("classpath:db/sample/create-session.sql")
+    })
+    public void downVoteSession_validSessionIdPassed_completed() {
+        // Process old count
+        assertThat(jpaSessionVoteRepository.count(), is(0L));
+
+        // Upvote session
+        sessionRepository.upVoteSession(SESSION_ID, USER_ID);
+
+        // Process new count
+        assertThat(jpaSessionVoteRepository.count(), is(1L));
+
+        // Upvote session
+        sessionRepository.downVoteSession(SESSION_ID, USER_ID);
+
+        // Process new count
+        assertThat(jpaSessionVoteRepository.count(), is(0L));
     }
 }

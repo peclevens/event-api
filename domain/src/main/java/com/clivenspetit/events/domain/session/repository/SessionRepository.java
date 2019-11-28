@@ -100,18 +100,18 @@ public interface SessionRepository {
     void deleteAllSessionsByEventIds(@NotNull Set<@UUID String> eventIds);
 
     /**
-     * Upvote session by id.
+     * Upvote a session.
      *
-     * @param id     The session id.
-     * @param userId The voter user id
+     * @param sessionId The session id.
+     * @param userId    The voter user id
      */
-    void upVoteSession(@UUID String id, @UUID String userId);
+    void upVoteSession(@UUID String sessionId, @UUID String userId);
 
     /**
-     * Downvote session by id.
+     * Downvote a session.
      *
-     * @param id     The session id.
-     * @param userId The voter user id
+     * @param sessionId The session id.
+     * @param userId    The voter user id
      */
-    void downVoteSession(@UUID String id, @UUID String userId);
+    void downVoteSession(@UUID String sessionId, @UUID String userId);
 }

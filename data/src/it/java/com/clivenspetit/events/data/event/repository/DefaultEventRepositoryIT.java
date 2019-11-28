@@ -20,6 +20,7 @@ import com.clivenspetit.events.data.event.mapper.EventMapper;
 import com.clivenspetit.events.data.session.mapper.SessionMapper;
 import com.clivenspetit.events.data.session.repository.DefaultSessionRepository;
 import com.clivenspetit.events.data.session.repository.JpaSessionRepository;
+import com.clivenspetit.events.data.session.repository.JpaSessionVoteRepository;
 import com.clivenspetit.events.data.user.repository.JpaUserRepository;
 import com.clivenspetit.events.domain.common.Level;
 import com.clivenspetit.events.domain.common.LocationMother;
@@ -75,6 +76,9 @@ public class DefaultEventRepositoryIT {
     @Autowired
     private JpaUserRepository jpaUserRepository;
 
+    @Autowired
+    private JpaSessionVoteRepository jpaSessionVoteRepository;
+
     private EventRepository eventRepository;
     private SessionRepository sessionRepository;
 
@@ -95,7 +99,7 @@ public class DefaultEventRepositoryIT {
     @Before
     public void setUp() throws Exception {
         sessionRepository = new DefaultSessionRepository(jpaSessionRepository, jpaEventRepository,
-                jpaUserRepository, sessionCache, SessionMapper.INSTANCE);
+                jpaUserRepository, jpaSessionVoteRepository, sessionCache, SessionMapper.INSTANCE);
 
         eventRepository = new DefaultEventRepository(jpaEventRepository, sessionRepository,
                 eventCache, EventMapper.INSTANCE);
