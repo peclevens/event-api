@@ -92,7 +92,7 @@ public class DefaultSessionRepository implements SessionRepository {
         }
 
         // Find session from database
-        return jpaSessionRepository.findBySessionId(id)
+        return jpaSessionRepository.findBySessionIdAndActiveIsTrue(id)
                 .map(sessionEntity -> {
                     Session session = sessionMapper.from(sessionEntity);
 
@@ -146,7 +146,7 @@ public class DefaultSessionRepository implements SessionRepository {
         logger.info("Create session with title: {}", session.getName());
 
         // Parent event
-        EventEntity eventEntity = jpaEventRepository.findByEventId(eventId)
+        EventEntity eventEntity = jpaEventRepository.findByEventIdAndActiveIsTrue(eventId)
                 .orElseThrow(EventNotFoundException::new);
         eventEntity.setEventId(eventId);
 
@@ -179,7 +179,7 @@ public class DefaultSessionRepository implements SessionRepository {
         logger.debug("Session generated cache key {}.", cacheKey);
 
         // Find old session
-        SessionEntity oldSession = jpaSessionRepository.findBySessionId(id).orElse(null);
+        SessionEntity oldSession = jpaSessionRepository.findBySessionIdAndActiveIsTrue(id).orElse(null);
 
         // Merge sessions
         SessionEntity mergeSession = sessionMapper.merge(session, oldSession);
@@ -316,7 +316,7 @@ public class DefaultSessionRepository implements SessionRepository {
                 .orElseThrow(UserNotFoundException::new);
 
         // Try to find session
-        SessionEntity sessionEntity = jpaSessionRepository.findBySessionId(sessionId)
+        SessionEntity sessionEntity = jpaSessionRepository.findBySessionIdAndActiveIsTrue(sessionId)
                 .orElseThrow(SessionNotFoundException::new);
 
         // Create session vote object

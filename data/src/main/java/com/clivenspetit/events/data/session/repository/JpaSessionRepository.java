@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public interface JpaSessionRepository extends JpaRepository<SessionEntity, Long> {
 
-    Optional<SessionEntity> findBySessionId(String id);
+    Optional<SessionEntity> findBySessionIdAndActiveIsTrue(String id);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM SessionEntity s WHERE s.sessionId = :sessionId")

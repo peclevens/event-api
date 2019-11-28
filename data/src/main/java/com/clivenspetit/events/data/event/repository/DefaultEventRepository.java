@@ -80,7 +80,7 @@ public class DefaultEventRepository implements EventRepository {
         }
 
         // Find event from database
-        return jpaEventRepository.findByEventId(id)
+        return jpaEventRepository.findByEventIdAndActiveIsTrue(id)
                 .map(eventEntity -> {
                     Event event = eventMapper.from(eventEntity);
 
@@ -159,7 +159,7 @@ public class DefaultEventRepository implements EventRepository {
         logger.debug("Event generated cache key {}.", cacheKey);
 
         // Find old event
-        EventEntity oldEvent = jpaEventRepository.findByEventId(id).orElse(null);
+        EventEntity oldEvent = jpaEventRepository.findByEventIdAndActiveIsTrue(id).orElse(null);
 
         // Merge events
         EventEntity mergeEvent = eventMapper.merge(event, oldEvent);

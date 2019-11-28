@@ -31,7 +31,7 @@ import java.util.Optional;
  */
 public interface JpaEventRepository extends JpaRepository<EventEntity, Long> {
 
-    Optional<EventEntity> findByEventId(String id);
+    Optional<EventEntity> findByEventIdAndActiveIsTrue(String id);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM EventEntity e WHERE e.eventId = :eventId")
