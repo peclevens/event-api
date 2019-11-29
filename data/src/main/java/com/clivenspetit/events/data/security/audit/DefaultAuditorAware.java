@@ -19,7 +19,7 @@ package com.clivenspetit.events.data.security.audit;
 import com.clivenspetit.events.data.user.entity.UserEntity;
 import com.clivenspetit.events.domain.Context;
 import com.clivenspetit.events.domain.user.exception.UserNotFoundException;
-import com.clivenspetit.events.domain.user.login.exception.InvalidLoggedInUserException;
+import com.clivenspetit.events.domain.user.login.exception.UnauthenticatedException;
 import org.springframework.data.domain.AuditorAware;
 
 import javax.cache.Cache;
@@ -46,7 +46,7 @@ public class DefaultAuditorAware implements AuditorAware<Long> {
     @Override
     public Optional<Long> getCurrentAuditor() {
         // Get the user id
-        String userId = context.getLoggedUser().orElseThrow(InvalidLoggedInUserException::new).getId();
+        String userId = context.getLoggedUser().orElseThrow(UnauthenticatedException::new).getId();
 
         // If user id is in cache, return it.
         if (userIdCache.containsKey(userId)) return Optional.of(userIdCache.get(userId));

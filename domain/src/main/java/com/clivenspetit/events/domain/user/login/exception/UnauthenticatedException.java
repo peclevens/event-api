@@ -19,13 +19,13 @@ package com.clivenspetit.events.domain.user.login.exception;
 /**
  * @author Clivens Petit
  */
-public class InvalidLoggedInUserException extends RuntimeException {
+public class UnauthenticatedException extends RuntimeException {
 
-    public InvalidLoggedInUserException() {
-        this("Invalid logged in user.");
+    public UnauthenticatedException() {
+        this("Unauthenticated.");
     }
 
-    public InvalidLoggedInUserException(String message) {
+    public UnauthenticatedException(String message) {
         super(message);
     }
 }
